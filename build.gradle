@@ -28,7 +28,9 @@ repositories {
 		url 'https://jitpack.io'
 	}
 }
-
+jar{
+	enabled = false
+}
 dependencies {
 	implementation 'com.nimbusds:nimbus-jose-jwt:3.1'
 	implementation 'com.github.in-seo:univcert:master-SNAPSHOT'
