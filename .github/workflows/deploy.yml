@@ -32,12 +32,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: make application-db.properties
-        run: |
-          cd ./src/main/resources
-          touch ./application-db.properties
-          echo "${{ secrets.DB_PROPERTIES }}" > ./application-db.properties
-        shell: bash
+#      - name: make application-db.properties
+#        run: |
+#          cd ./src/main/resources
+#          touch ./application-db.properties
+#          echo "${{ secrets.DB_PROPERTIES }}" > ./application-db.properties
+#        shell: bash
 
       - name: 🔧 Build Spring server
         run: |
