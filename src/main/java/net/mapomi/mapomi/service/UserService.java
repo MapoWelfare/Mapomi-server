@@ -15,11 +15,11 @@ import net.mapomi.mapomi.repository.UserRepository;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,11 +30,11 @@ public class UserService {
     private final JwtTokenProvider jwtProvider;
 
     @Transactional
-    public TokenDto login(LoginDto dto) {
+    public JSONObject login(LoginDto dto) {
         User user = userRepository.findByAccountId(dto.getId()).orElseThrow(UserNotFoundException::new);
 
         if (!user.getPassword().equals(dto.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+            return PropertyUtil.responseMessage("비밀번호가 일치하지 않습니다.");
         }
         TokenDto tokenDto = jwtProvider.createToken(user.getAccountId(), user.getId(), user.getRole());
         //리프레시 토큰 저장
@@ -44,25 +44,29 @@ public class UserService {
                 .build();
 
         refreshTokenRepository.save(refreshToken);
-        return tokenDto;
+
+        return PropertyUtil.response(tokenDto);
     }
 
     @Transactional
     public JSONObject signup(String type, JoinDto joinInfo) throws NullPointerException { //아이디 비번 이름 생일 통신사 번호 저장
-        if(type.equals("disabled")){
-            Disabled disabled = new Disabled(joinInfo);
-            userRepository.save(disabled);
-        }
-        else if(type.equals("abled")){
-            Abled abled = new Abled(joinInfo);
-            userRepository.save(abled);
-        }
-        else {
-            Observer observer = new Observer(joinInfo);
-            userRepository.save(observer);
-        }
+        User user;
+        if(type.equals("disabled"))
+            user = new Disabled(joinInfo);
+        else if(type.equals("abled"))
+            user = new Abled(joinInfo);
+        else
+            user = new Observer(joinInfo);
 
+        userRepository.save(user);
+        return PropertyUtil.response(true);
+    }
 
+    @Transactional
+    public JSONObject checkId(String id) {
+        Optional<User> user = userRepository.findByAccountId(id);
+        if(user.isPresent())
+            return PropertyUtil.responseMessage("이미 존재하는 id입니다.");
         return PropertyUtil.response(true);
     }
 
