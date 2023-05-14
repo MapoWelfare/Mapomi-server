@@ -28,7 +28,7 @@ public class SwaggerConfig {
 
     private static final String API_NAME = "마포미 API";
     private static final String API_VERSION = "1.0.0";
-    private static final String API_DESCRIPTION = "마포미 API 명세서";
+    private static final String API_DESCRIPTION = "disabled:장애인  /  abled : 동행인  /  observer : 지인(관찰자)";
 
 
 
