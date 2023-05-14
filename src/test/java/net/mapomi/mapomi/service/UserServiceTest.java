@@ -68,12 +68,12 @@ class UserServiceTest {
     @Order(3)
     @DisplayName("로그인, jwt 토큰 테스트")
     void login() {
-        TokenDto login = userService.login(new LoginDto(id, pw));
+        JSONObject login = userService.login(new LoginDto(id, pw));
         disabled_user_id = disabled.getId();
         List<RefreshToken> refreshTokens = tokenRepository.findByKey(disabled_user_id);
         RefreshToken refreshToken = refreshTokens.get(refreshTokens.size()-1); //마지막꺼가 가장 최신반영된 토큰
-
-        Assertions.assertEquals(refreshToken.getToken(), login.getRefreshToken());
+        JSONObject data = (JSONObject) login.get("data");
+        Assertions.assertEquals(refreshToken.getToken(), data.get("refreshToken"));
     }
 
 //    @Test
