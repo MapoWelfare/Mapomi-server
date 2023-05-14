@@ -76,4 +76,5 @@ jobs:
           script: |
             cd deploy
             docker build -t mapomi .
+            docker container stop mapomi
             docker run -d --rm -p 8080:8080 --name mapomi mapomi
