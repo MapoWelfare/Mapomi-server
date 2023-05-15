@@ -3,6 +3,7 @@ package net.mapomi.mapomi.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.mapomi.mapomi.common.PropertyUtil;
+import net.mapomi.mapomi.common.UserUtils;
 import net.mapomi.mapomi.common.error.UserNotFoundException;
 import net.mapomi.mapomi.domain.user.Abled;
 import net.mapomi.mapomi.domain.user.Disabled;
@@ -16,7 +17,6 @@ import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -24,10 +24,11 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserCommandService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtProvider;
+    private final UserUtils userUtils;
 
     @Transactional
     public JSONObject login(LoginDto dto) {
@@ -62,11 +63,19 @@ public class UserService {
         return PropertyUtil.response(true);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public JSONObject checkId(String id) {
         Optional<User> user = userRepository.findByAccountId(id);
         if(user.isPresent())
             return PropertyUtil.responseMessage("이미 존재하는 id입니다.");
+        return PropertyUtil.response(true);
+    }
+
+    @Transactional(readOnly = true)
+    public JSONObject checkNickName(String nickName) {
+        Optional<User> user = userRepository.findByNickName(nickName);
+        if(user.isPresent())
+            return PropertyUtil.responseMessage("이미 존재하는 닉네임입니다.");
         return PropertyUtil.response(true);
     }
 
@@ -96,23 +105,25 @@ public class UserService {
 //    }
 
     @Transactional
-    public TokenDto reissue(User User, TokenRequestDto tokenRequestDto) {
+    public JSONObject reissue(TokenRequestDto tokenRequestDto) {
+        User user = userUtils.getCurrentUser();
+
         // 만료된 refresh token 에러
         if (!jwtProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("리프레쉬 토큰 만료");
         }
 
-        List<RefreshToken> refreshTokens = refreshTokenRepository.findByKey(User.getId());
+        List<RefreshToken> refreshTokens = refreshTokenRepository.findByKey(user.getId());
         RefreshToken refreshToken = refreshTokens.get(refreshTokens.size()-1); //마지막꺼가 가장 최신반영된 토큰
         // 리프레시 토큰 불일치 에러
         if (!refreshToken.getToken().equals(tokenRequestDto.getRefreshToken()))
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("리프레쉬 토큰 불일치");
 
         // AccessToken, RefreshToken 토큰 재발급, 리프레쉬 토큰 저장
-        TokenDto newCreatedToken = jwtProvider.createToken(User.getAccountId(), User.getId(), User.getRole());
+        TokenDto newCreatedToken = jwtProvider.createToken(user.getAccountId(), user.getId(), user.getRole());
         RefreshToken updateRefreshToken = refreshToken.updateToken(newCreatedToken.getRefreshToken());
         refreshTokenRepository.save(updateRefreshToken);
 
-        return newCreatedToken;
+        return PropertyUtil.response(newCreatedToken);
     }
 }
