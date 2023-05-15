@@ -7,6 +7,7 @@ import net.mapomi.mapomi.common.ApiDocumentResponse;
 import net.mapomi.mapomi.dto.request.JoinDto;
 import net.mapomi.mapomi.dto.request.LoginDto;
 import net.mapomi.mapomi.dto.request.NickNameDto;
+import net.mapomi.mapomi.jwt.TokenRequestDto;
 import net.mapomi.mapomi.service.UserCommandService;
 import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +53,12 @@ public class UserController {
     @PostMapping("/login")
     public JSONObject login(@RequestBody LoginDto dto) {
         return userCommandService.login(dto);
+    }
+
+    @ApiOperation(value = "토큰 재발급", notes = "액세스, 리프레쉬 토큰 같이 줘야함!!")
+    @PostMapping("/reissue")
+    public JSONObject reissue(@RequestBody TokenRequestDto dto) {
+        return userCommandService.reissue(dto);
     }
 
 //    @ApiOperation(value = "토큰 만료시 재발급 토큰들은 필요없고 헤더에 Authorization만 있으면 됩니다.")
