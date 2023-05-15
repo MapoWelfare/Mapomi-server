@@ -5,7 +5,6 @@ import net.mapomi.mapomi.dto.request.JoinDto;
 import net.mapomi.mapomi.dto.request.LoginDto;
 import net.mapomi.mapomi.jwt.RefreshToken;
 import net.mapomi.mapomi.jwt.RefreshTokenRepository;
-import net.mapomi.mapomi.jwt.TokenDto;
 import net.mapomi.mapomi.repository.UserRepository;
 import org.json.simple.JSONObject;
 import org.junit.jupiter.api.*;
@@ -22,9 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserServiceTest {
+class UserCommandServiceTest {
     @Autowired
-    UserService userService;
+    UserCommandService userCommandService;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -44,9 +43,9 @@ class UserServiceTest {
         JoinDto dto = new JoinDto(id, pw, "송인서", "0105013334", "로롤", true, "경기도 안양", 20, "시각 장애");
         JoinDto dto2 = new JoinDto("def", "def", "유성욱", "0105013334", "나난", true, "경기도 안양", 20, "");
         JoinDto dto3 = new JoinDto("ghi", "ghi", "윤강현", "01043273481", "도동", true, "", 0, "");
-        JSONObject obj = userService.signup("disabled", dto);
-        JSONObject obj2 = userService.signup("abled", dto2);
-        JSONObject obj3 = userService.signup("observer", dto3);
+        JSONObject obj = userCommandService.signup("disabled", dto);
+        JSONObject obj2 = userCommandService.signup("abled", dto2);
+        JSONObject obj3 = userCommandService.signup("observer", dto3);
         assertEquals(obj.get("success"), true);
         assertEquals(obj2.get("success"), true);
         assertEquals(obj3.get("success"), true);
@@ -68,7 +67,7 @@ class UserServiceTest {
     @Order(3)
     @DisplayName("로그인, jwt 토큰 테스트")
     void login() {
-        JSONObject login = userService.login(new LoginDto(id, pw));
+        JSONObject login = userCommandService.login(new LoginDto(id, pw));
         disabled_user_id = disabled.getId();
         List<RefreshToken> refreshTokens = tokenRepository.findByKey(disabled_user_id);
         RefreshToken refreshToken = refreshTokens.get(refreshTokens.size()-1); //마지막꺼가 가장 최신반영된 토큰
