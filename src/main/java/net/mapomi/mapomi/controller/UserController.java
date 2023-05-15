@@ -34,7 +34,7 @@ public class UserController {
     @ApiDocumentResponse
     @ApiOperation(value = "닉네임 체크", notes = "이미 존재하는 닉네임일때 -> success : false, message : 이미 존재하는 닉네임입니다.")
     @PostMapping("/check/nickname")
-    public JSONObject checkNickName(@Valid @RequestBody NickNameDto nickNameDto) {
+    public JSONObject checkNickName(@RequestBody NickNameDto nickNameDto) {
         return userCommandService.checkNickName(nickNameDto.getNickName());
     }
 

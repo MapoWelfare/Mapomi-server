@@ -61,7 +61,7 @@ public class UserCommandService {
         return PropertyUtil.response(true);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public JSONObject checkId(String id) {
         Optional<User> user = userRepository.findByAccountId(id);
         if(user.isPresent())
@@ -69,7 +69,7 @@ public class UserCommandService {
         return PropertyUtil.response(true);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public JSONObject checkNickName(String nickName) {
         Optional<User> user = userRepository.findByNickName(nickName);
         if(user.isPresent())

@@ -1,25 +1,41 @@
 package net.mapomi.mapomi.service;
 
+import net.mapomi.mapomi.controller.UserController;
 import net.mapomi.mapomi.domain.user.User;
 import net.mapomi.mapomi.dto.request.JoinDto;
 import net.mapomi.mapomi.dto.request.LoginDto;
 import net.mapomi.mapomi.jwt.RefreshToken;
 import net.mapomi.mapomi.jwt.RefreshTokenRepository;
+import net.mapomi.mapomi.jwt.TokenDto;
 import net.mapomi.mapomi.repository.UserRepository;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.junit.Before;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.result.PrintingResultHandler;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.transaction.Transactional;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
+@AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserCommandServiceTest {
     @Autowired
@@ -28,12 +44,25 @@ class UserCommandServiceTest {
     UserRepository userRepository;
     @Autowired
     RefreshTokenRepository tokenRepository;
+    @Autowired
+    private MockMvc mockMvc;
+
+
     private User disabled;
     private User abled;
     private User observer;
     private static final String id = "abc";
     private static final String pw = "abc";
     private static Long disabled_user_id = 0L;
+
+    @Before
+    public void setUp() {
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new UserController(userCommandService))
+                .alwaysExpect(status().isOk())
+                .build();
+
+    }
+
     @Test
     @Order(1)
     @DisplayName("회원가입")
@@ -53,7 +82,8 @@ class UserCommandServiceTest {
 
     @Test
     @Order(2)
-    @DisplayName("회원 저장 테스트")
+    @DisplayName("회원 저장")
+    @Rollback(value = false)
     void certifyStart() {
         disabled = userRepository.findByAccountId(id).orElseThrow();
         abled = userRepository.findByAccountId("def").orElseThrow();
@@ -65,14 +95,33 @@ class UserCommandServiceTest {
 
     @Test
     @Order(3)
-    @DisplayName("로그인, jwt 토큰 테스트")
+    @DisplayName("로그인, jwt 토큰")
+    @Rollback(value = false)
     void login() {
         JSONObject login = userCommandService.login(new LoginDto(id, pw));
         disabled_user_id = disabled.getId();
         List<RefreshToken> refreshTokens = tokenRepository.findByKey(disabled_user_id);
         RefreshToken refreshToken = refreshTokens.get(refreshTokens.size()-1); //마지막꺼가 가장 최신반영된 토큰
-        JSONObject data = (JSONObject) login.get("data");
-        Assertions.assertEquals(refreshToken.getToken(), data.get("refreshToken"));
+        TokenDto tokens = (TokenDto) login.get("data");
+        Assertions.assertEquals(refreshToken.getToken(), tokens.getRefreshToken());
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("id, nickname 중복체크")
+    void check() throws Exception {
+        RequestBuilder idBuilder = MockMvcRequestBuilders.post("/check/id")
+                .content("{ \"id\" : \"def\"}")
+                .contentType(MediaType.APPLICATION_JSON);
+        RequestBuilder nickBuilder = MockMvcRequestBuilders.post("/check/nickname")
+                .content("{ \"nickname\" : \"dd\"}")
+                .contentType(MediaType.APPLICATION_JSON);
+        this.mockMvc.perform(idBuilder)
+                .andDo(print())
+                .andExpect(content().json("{ \"success\" : false, \"message\" :  \"이미 존재하는 id입니다.\"}"));
+        this.mockMvc.perform(nickBuilder)
+                .andDo(print())
+                .andExpect(content().json("{ \"success\" : true}"));;
     }
 
 //    @Test
