@@ -1,5 +1,6 @@
 package net.mapomi.mapomi.repository;
 
+import net.mapomi.mapomi.domain.user.Disabled;
 import net.mapomi.mapomi.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u where u.nickName = :nickName")
     Optional<User> findByNickName(@Param("nickName")String nickName);
+
+    @Query("select d from Disabled d where d.id = :id")
+    Optional<Disabled> findDisabledById(@Param("id")Long id);
 }

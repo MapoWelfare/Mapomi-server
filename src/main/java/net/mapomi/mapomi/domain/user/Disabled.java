@@ -27,6 +27,8 @@ public class Disabled extends User{
     @Column
     private int popularity=0;
 
+    @Column
+    private String type;
 
     @OneToMany(mappedBy = "disabled",cascade = CascadeType.MERGE)
     private List<Post> posts = new ArrayList<>();
@@ -39,6 +41,7 @@ public class Disabled extends User{
         super(dto.getId(), dto.getPassword(), dto.getNickname(), "", Role.setRole("disabled"));
         this.age = dto.getAge();
         this.residence = dto.getResidence();
+        this.type = dto.getType();
     }
 
     protected Disabled() {super();}
