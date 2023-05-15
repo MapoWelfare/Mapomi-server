@@ -16,7 +16,6 @@ import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -24,7 +23,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserCommandService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtProvider;
@@ -62,11 +61,19 @@ public class UserService {
         return PropertyUtil.response(true);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public JSONObject checkId(String id) {
         Optional<User> user = userRepository.findByAccountId(id);
         if(user.isPresent())
             return PropertyUtil.responseMessage("이미 존재하는 id입니다.");
+        return PropertyUtil.response(true);
+    }
+
+    @Transactional(readOnly = true)
+    public JSONObject checkNickName(String nickName) {
+        Optional<User> user = userRepository.findByNickName(nickName);
+        if(user.isPresent())
+            return PropertyUtil.responseMessage("이미 존재하는 닉네임입니다.");
         return PropertyUtil.response(true);
     }
 
