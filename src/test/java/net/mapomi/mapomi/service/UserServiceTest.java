@@ -9,7 +9,6 @@ import net.mapomi.mapomi.jwt.RefreshTokenRepository;
 import net.mapomi.mapomi.jwt.TokenDto;
 import net.mapomi.mapomi.repository.UserRepository;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.result.PrintingResultHandler;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.transaction.Transactional;
@@ -33,11 +29,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 @SpringBootTest
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserCommandServiceTest {
+public class UserServiceTest {
     @Autowired
     UserCommandService userCommandService;
     @Autowired

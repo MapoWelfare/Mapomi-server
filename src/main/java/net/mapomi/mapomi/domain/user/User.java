@@ -31,6 +31,9 @@ public class User extends BaseTimeEntity {
     private String picture="";
 
     @Column
+    private String email="";
+
+    @Column
     private boolean certified =false;
 
     @Setter
@@ -43,6 +46,12 @@ public class User extends BaseTimeEntity {
         this.nickName = nickName;
         this.picture = picture;
         this.role = role;
+    }
+
+    public User(String email, String picture) {
+        this.email = email;
+        this.accountId = email;
+        this.picture = picture;
     }
 
     protected User() {}
