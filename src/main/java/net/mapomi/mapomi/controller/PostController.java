@@ -16,24 +16,23 @@ public class PostController {
     private final PostService postService;
 
     @ApiDocumentResponse
-    @ApiOperation(value = "작품 판매 글 생성",notes = "{\"success\":true, \"id\":52}\n해당 글의 id를 전해드리니 이 /products/{id}/image 에 넘겨주세요\n" +
-            "category = painting,orient,sculpture,print,craft,other")
-    @PostMapping(value = "/products/build", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @ApiOperation(value = "동행 글 생성")
+    @PostMapping(value = "/post/build", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public JSONObject makePost(@RequestBody PostBuildDto buildDto) {
         return postService.build(buildDto);
     }
 
 
     @ApiDocumentResponse
-    @ApiOperation(value = "작품 수정")
-    @PostMapping(value = "/products/{id}/edit")
+    @ApiOperation(value = "글 수정")
+    @PostMapping(value = "/post/{id}/edit")
     public JSONObject editPost(@PathVariable("id") Long productId, @RequestBody PostBuildDto editDto) {
         return postService.edit(productId, editDto);
     }
 
     @ApiDocumentResponse
     @ApiOperation(value = "작품 삭제")
-    @PostMapping(value = "/products/{id}/delete")
+    @PostMapping(value = "/post/{id}/delete")
     public JSONObject deletePost(@PathVariable("id") Long productId) {
         return postService.delete(productId);
     }

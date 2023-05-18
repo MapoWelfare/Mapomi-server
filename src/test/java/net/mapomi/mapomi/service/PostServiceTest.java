@@ -62,8 +62,8 @@ public class PostServiceTest {
     @Rollback(value = false)
     void build() {
         userCommandService.login(new LoginDto("abc", "abc"));
-        PostBuildDto buildDto1 = new PostBuildDto("등록 및 수정 테스트","내용1","2023-06-04T17:50:00");
-        PostBuildDto buildDto2 = new PostBuildDto("삭제 테스트","내용2","2023-06-04T17:50:00");
+        PostBuildDto buildDto1 = new PostBuildDto("등록 및 수정 테스트","내용1","2023-06-04T17:50:00","","","");
+        PostBuildDto buildDto2 = new PostBuildDto("삭제 테스트","내용2","2023-06-04T17:50:00","","","");
         JSONObject response1 = postService.build(buildDto1);
         JSONObject response2 = postService.build(buildDto2);
         Long id1 = (Long) response1.get("id");
@@ -92,7 +92,7 @@ public class PostServiceTest {
     @Transactional
     @Rollback(value = false)
     void edit() {
-        postService.edit(buildPostId,new PostBuildDto("수정완료","수정내용","2023-06-11T17:50:00"));
+        postService.edit(buildPostId,new PostBuildDto("수정완료","수정내용","2023-06-11T17:50:00","","",""));
         Post post = postRepository.findById(buildPostId).orElseThrow(PostNotFoundException::new);
         assertTrue(post.getTitle().equals("수정완료"));
         assertTrue(post.getContent().equals("수정내용"));
