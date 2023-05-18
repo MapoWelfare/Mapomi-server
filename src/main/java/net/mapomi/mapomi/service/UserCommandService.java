@@ -23,6 +23,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserCommandService {
     private final UserRepository userRepository;
@@ -30,8 +31,12 @@ public class UserCommandService {
     private final JwtTokenProvider jwtProvider;
     private final UserUtils userUtils;
 
-    @Transactional
-    public JSONObject login(LoginDto dto) {
+
+    public User saveTempUser(User user){
+        return userRepository.save(user);
+    }
+
+    public JSONObject login(LoginDto dto) { //일반로그인
         User user = userRepository.findByAccountId(dto.getId()).orElseThrow(UserNotFoundException::new);
 
         if (!user.getPassword().equals(dto.getPassword())) {
@@ -49,7 +54,23 @@ public class UserCommandService {
         return PropertyUtil.response(tokenDto);
     }
 
-    @Transactional
+    public TokenDto oAuthLogin(String email) { //소셜로그인
+        User user = userRepository.findByAccountId(email).orElseThrow(UserNotFoundException::new);
+
+        TokenDto tokenDto = jwtProvider.createToken(user.getAccountId(), user.getId(), user.getRole());
+        if(user.getNickName().isEmpty())
+            tokenDto.setJoined(false);
+        //리프레시 토큰 저장
+        RefreshToken refreshToken = RefreshToken.builder()
+                .key(user.getId())
+                .token(tokenDto.getRefreshToken())
+                .build();
+
+        refreshTokenRepository.save(refreshToken);
+
+        return tokenDto;
+    }
+
     public JSONObject signup(String type, JoinDto joinInfo) throws NullPointerException { //아이디 비번 이름 생일 통신사 번호 저장
         User user;
         if(type.equals("disabled"))
