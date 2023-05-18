@@ -45,19 +45,19 @@ public class OAuthController {
     }
 
     @ApiOperation(value = "스프링용 카카오로그인 실행(인가코드)",notes = "로컬환경 : https://kauth.kakao.com/oauth/authorize?client_id=ad91fa142c08bdf6f047dfb348f53b10&redirect_uri=http://localhost:8080/login/oauth2/code/kakao&response_type=code\n" +
-            "배포환경 : https://kauth.kakao.com/oauth/authorize?client_id=ad91fa142c08bdf6f047dfb348f53b10&redirect_uri=http://3.35.250.204/login/oauth2/code/kakao&response_type=code")
+            "배포환경 : https://kauth.kakao.com/oauth/authorize?client_id=ad91fa142c08bdf6f047dfb348f53b10&redirect_uri=http://3.35.250.204:8080/login/oauth2/code/kakao&response_type=code")
     @GetMapping("/test1")
     public String kakaoLogin() {
         return "로컬환경 : https://kauth.kakao.com/oauth/authorize?client_id="+KAKAO_ID +
-                "&redirect_uri=http://localhost:8080/login/oauth2/code/kakao&response_type=code" +"\n"+
+                "&redirect_uri="+localURL+"/login/oauth2/code/kakao&response_type=code" +"\n"+
                 "배포환경 : https://kauth.kakao.com/oauth/authorize?client_id="+KAKAO_ID +
-                "&redirect_uri=http://3.35.250.204/login/oauth2/code/kakao&response_type=code";
+                "&redirect_uri="+productURL+"/login/oauth2/code/kakao&response_type=code";
     }
 
     @ApiOperation(value = "스프링용 카카오 액세스토큰 추출로직", notes = "웹, 안드, ios는 이 로직말고 /oauth/get으로 바로 액세스 토큰 전달해주세요")
     @GetMapping(value = "/login/oauth2/code/kakao")
     public JSONObject oauthKakao(@RequestParam(value = "code", required = false) String code) throws Exception {
         System.out.println("인가코드 = {"+code+"}");
-        return oAuthService.getKakaoAccessToken(localURL+"/login/oauth2/code/kakao", code);
+        return oAuthService.getKakaoAccessToken(productURL+"/login/oauth2/code/kakao", code);
     }
 }
