@@ -4,11 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class LoginDto {
-    private String id;
-    private String password;
+    private String nickName;
 
-    public LoginDto(String id, String password) {
-        this.id = id;
-        this.password = password;
+    public LoginDto(String nickName) {
+        this.nickName = nickName;
     }
 }

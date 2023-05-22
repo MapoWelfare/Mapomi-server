@@ -2,8 +2,8 @@ package net.mapomi.mapomi.service;
 
 import net.mapomi.mapomi.controller.UserController;
 import net.mapomi.mapomi.domain.user.User;
+import net.mapomi.mapomi.dto.request.DetailJoinDto;
 import net.mapomi.mapomi.dto.request.JoinDto;
-import net.mapomi.mapomi.dto.request.LoginDto;
 import net.mapomi.mapomi.jwt.RefreshToken;
 import net.mapomi.mapomi.jwt.RefreshTokenRepository;
 import net.mapomi.mapomi.jwt.TokenDto;
@@ -48,8 +48,9 @@ public class UserServiceTest {
     private User disabled;
     private User abled;
     private User observer;
-    private static final String id = "abc";
-    private static final String pw = "abc";
+    private static final String nickname1 = "승우";
+    private static final String nickname2 = "인서";
+    private static final String nickname3 = "성욱";
     private static Long disabled_user_id = 0L;
 
     @Before
@@ -66,9 +67,9 @@ public class UserServiceTest {
     @Transactional
     @Rollback(value = false)
     void join() {
-        JoinDto dto = new JoinDto(id, pw, "송인서", "0105013334", "로롤", true, "경기도 안양", 20, "시각 장애");
-        JoinDto dto2 = new JoinDto("def", "def", "유성욱", "0105013334", "나난", true, "경기도 안양", 20, "");
-        JoinDto dto3 = new JoinDto("ghi", "ghi", "윤강현", "01043273481", "도동", true, "", 0, "");
+        JoinDto dto = new JoinDto(nickname1, "01043698323");
+        JoinDto dto2 = new JoinDto(nickname2, "01012123423");
+        JoinDto dto3 = new JoinDto(nickname3, "01088888888");
         JSONObject obj = userCommandService.signup("disabled", dto);
         JSONObject obj2 = userCommandService.signup("abled", dto2);
         JSONObject obj3 = userCommandService.signup("observer", dto3);
@@ -82,12 +83,12 @@ public class UserServiceTest {
     @DisplayName("회원 저장")
     @Rollback(value = false)
     void certifyStart() {
-        disabled = userRepository.findByAccountId(id).orElseThrow();
-        abled = userRepository.findByAccountId("def").orElseThrow();
-        observer = userRepository.findByAccountId("ghi").orElseThrow();
-        assertEquals(disabled.getNickName(), "로롤");
-        assertEquals(abled.getNickName(), "나난");
-        assertEquals(observer.getNickName(), "도동");
+        disabled = userRepository.findByNickName(nickname1).orElseThrow();
+        abled = userRepository.findByNickName(nickname2).orElseThrow();
+        observer = userRepository.findByNickName(nickname3).orElseThrow();
+        assertEquals(disabled.getNickName(), nickname1);
+        assertEquals(abled.getNickName(), nickname2);
+        assertEquals(observer.getNickName(), nickname3);
     }
 
     @Test
@@ -95,7 +96,7 @@ public class UserServiceTest {
     @DisplayName("로그인, jwt 토큰")
     @Rollback(value = false)
     void login() {
-        JSONObject login = userCommandService.login(new LoginDto(id, pw));
+        JSONObject login = userCommandService.login(nickname1);
         disabled_user_id = disabled.getId();
         List<RefreshToken> refreshTokens = tokenRepository.findByKey(disabled_user_id);
         RefreshToken refreshToken = refreshTokens.get(refreshTokens.size()-1); //마지막꺼가 가장 최신반영된 토큰
@@ -105,17 +106,11 @@ public class UserServiceTest {
 
     @Test
     @Order(4)
-    @DisplayName("id, nickname 중복체크")
+    @DisplayName("nickname 중복체크")
     void check() throws Exception {
-        RequestBuilder idBuilder = MockMvcRequestBuilders.post("/check/id")
-                .content("{ \"id\" : \"def\"}")
-                .contentType(MediaType.APPLICATION_JSON);
         RequestBuilder nickBuilder = MockMvcRequestBuilders.post("/check/nickname")
-                .content("{ \"nickname\" : \"dd\"}")
+                .content("{ \"nickname\" : \"승우\"}")
                 .contentType(MediaType.APPLICATION_JSON);
-        this.mockMvc.perform(idBuilder)
-                .andDo(print())
-                .andExpect(content().json("{ \"success\" : false, \"message\" :  \"이미 존재하는 id입니다.\"}"));
         this.mockMvc.perform(nickBuilder)
                 .andDo(print())
                 .andExpect(content().json("{ \"success\" : true}"));;

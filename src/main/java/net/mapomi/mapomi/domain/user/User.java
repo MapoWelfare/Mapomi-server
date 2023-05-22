@@ -19,12 +19,6 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Column
-    private String accountId="";
-
-    @Column
-    private String password="";
-
-    @Column
     private String nickName="";
 
     @Column
@@ -41,9 +35,7 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public User(String accountId, String password, String nickName, String picture, Role role) {
-        this.accountId = accountId;
-        this.password = password;
+    public User(String nickName, String picture, Role role) {
         this.nickName = nickName;
         this.picture = picture;
         this.role = role;
@@ -51,7 +43,6 @@ public class User extends BaseTimeEntity {
 
     public User(String email, String picture) {
         this.email = email;
-        this.accountId = email;
         this.picture = picture;
     }
 
