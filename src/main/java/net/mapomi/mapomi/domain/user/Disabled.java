@@ -1,8 +1,6 @@
 package net.mapomi.mapomi.domain.user;
 
 import lombok.Getter;
-import lombok.Setter;
-import net.mapomi.mapomi.common.BaseTimeEntity;
 import net.mapomi.mapomi.domain.Post;
 import net.mapomi.mapomi.domain.Role;
 import net.mapomi.mapomi.dto.request.JoinDto;
@@ -38,10 +36,7 @@ public class Disabled extends User{
 
 
     public Disabled(JoinDto dto) {
-        super(dto.getId(), dto.getPassword(), dto.getNickname(), "", Role.setRole("disabled"));
-        this.age = dto.getAge();
-        this.residence = dto.getResidence();
-        this.type = dto.getType();
+        super(dto.getNickname(), "", Role.setRole("disabled"));
     }
 
     protected Disabled() {super();}

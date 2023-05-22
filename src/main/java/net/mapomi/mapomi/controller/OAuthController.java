@@ -39,7 +39,7 @@ public class OAuthController {
         }
         catch(UserNotFoundException e){
             User savedUser = userService.saveTempUser(new User(OauthUser.getEmail(), OauthUser.getPicture()));
-            jwtToken = userService.oAuthLogin(savedUser.getAccountId());
+            jwtToken = userService.oAuthLogin(savedUser.getEmail());
         }
         return PropertyUtil.response(jwtToken);
     }

@@ -9,6 +9,7 @@ import net.mapomi.mapomi.domain.user.Abled;
 import net.mapomi.mapomi.domain.user.Disabled;
 import net.mapomi.mapomi.domain.user.Observer;
 import net.mapomi.mapomi.domain.user.User;
+import net.mapomi.mapomi.dto.request.DetailJoinDto;
 import net.mapomi.mapomi.dto.request.JoinDto;
 import net.mapomi.mapomi.dto.request.LoginDto;
 import net.mapomi.mapomi.image.S3Service;
@@ -39,12 +40,8 @@ public class UserCommandService {
         return userRepository.save(user);
     }
 
-    public JSONObject login(LoginDto dto) { //일반로그인
-        User user = userRepository.findByAccountId(dto.getId()).orElseThrow(UserNotFoundException::new);
-
-        if (!user.getPassword().equals(dto.getPassword())) {
-            return PropertyUtil.responseMessage("비밀번호가 일치하지 않습니다.");
-        }
+    public JSONObject login(String nickName) {
+        User user = userRepository.findByNickName(nickName).orElseThrow(UserNotFoundException::new);
         TokenDto tokenDto = jwtProvider.createToken(user.getId(), user.getId(), user.getRole());
         //리프레시 토큰 저장
         RefreshToken refreshToken = RefreshToken.builder()
@@ -58,7 +55,7 @@ public class UserCommandService {
     }
 
     public TokenDto oAuthLogin(String email) { //소셜로그인
-        User user = userRepository.findByAccountId(email).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
 
         TokenDto tokenDto = jwtProvider.createToken(user.getId(), user.getId(), user.getRole());
         if(user.getNickName().isEmpty())
@@ -88,14 +85,6 @@ public class UserCommandService {
     }
 
     @Transactional(readOnly = true)
-    public JSONObject checkId(String id) {
-        Optional<User> user = userRepository.findByAccountId(id);
-        if(user.isPresent())
-            return PropertyUtil.responseMessage("이미 존재하는 id입니다.");
-        return PropertyUtil.response(true);
-    }
-
-    @Transactional(readOnly = true)
     public JSONObject checkNickName(String nickName) {
         Optional<User> user = userRepository.findByNickName(nickName);
         if(user.isPresent())
@@ -103,32 +92,7 @@ public class UserCommandService {
         return PropertyUtil.response(true);
     }
 
-//    @Transactional
-//    public JSONObject changePW(Long id, String pw) {
-//        User user = userRepository.findById(id).orElseThrow();
-//        return PropertyUtil.response(user.changePW(passwordEncoder.encode(pw)));
-//    }
-//
-//
-//    @Transactional(readOnly = true)
-//    public JSONObject checkPW(Long id, String pw) {
-//        User user = userRepository.findById(id).orElseThrow();
-//        if (!passwordEncoder.matches(pw, user.getPassword())) {
-//            return PropertyUtil.response("비밀번호가 일치하지 않습니다.");
-//        }
-//        return PropertyUtil.response(true);
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public JSONObject checkPW(String accountId, String pw) {
-//        User user = userRepository.findByAccountId(accountId).orElseThrow();
-//        if (!passwordEncoder.matches(pw, user.getPassword())) {
-//            return PropertyUtil.response("비밀번호가 일치하지 않습니다.");
-//        }
-//        return PropertyUtil.response(true);
-//    }
 
-    @Transactional
     public JSONObject reissue(TokenRequestDto tokenRequestDto) {
         User user = userUtils.getCurrentUser();
 
