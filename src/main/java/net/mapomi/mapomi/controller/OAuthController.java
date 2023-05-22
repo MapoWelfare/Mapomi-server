@@ -45,7 +45,7 @@ public class OAuthController {
     }
 
     @ApiOperation(value = "스프링용 카카오로그인 실행(인가코드)",notes = "로컬환경 : https://kauth.kakao.com/oauth/authorize?client_id=ad91fa142c08bdf6f047dfb348f53b10&redirect_uri=http://localhost:8080/login/oauth2/code/kakao&response_type=code\n" +
-            "배포환경 : https://kauth.kakao.com/oauth/authorize?client_id=ad91fa142c08bdf6f047dfb348f53b10&redirect_uri=http://3.35.250.204:8080/login/oauth2/code/kakao&response_type=code")
+            "배포환경 : https://kauth.kakao.com/oauth/authorize?client_id=ad91fa142c08bdf6f047dfb348f53b10&redirect_uri=https://mapomi.net/login/oauth2/code/kakao&response_type=code")
     @GetMapping("/test1")
     public String kakaoLogin() {
         return "로컬환경 : https://kauth.kakao.com/oauth/authorize?client_id="+KAKAO_ID +
