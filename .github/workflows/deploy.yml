@@ -39,6 +39,13 @@ jobs:
 #          echo "${{ secrets.DB_PROPERTIES }}" > ./application-db.properties
 #        shell: bash
 
+      - name: make application-real.properties
+        run: |
+          cd ./src/main/resources
+          touch ./application-real.properties
+          echo "${{ secrets.REAL_PROPERTIES }}" > ./application-real.properties
+        shell: bash
+
       - name: 🔧 Build Spring server
         run: |
           chmod +x ./gradlew
