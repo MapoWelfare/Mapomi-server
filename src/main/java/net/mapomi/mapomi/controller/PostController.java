@@ -1,13 +1,21 @@
 package net.mapomi.mapomi.controller;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import net.mapomi.mapomi.common.ApiDocumentResponse;
+import net.mapomi.mapomi.common.UserUtils;
 import net.mapomi.mapomi.dto.request.PostBuildDto;
+import net.mapomi.mapomi.dto.response.ShowForm;
 import net.mapomi.mapomi.service.PostService;
 import org.json.simple.JSONObject;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -38,54 +46,24 @@ public class PostController {
     }
 
 
-//    @PostMapping("/products/{id}")
-//    @ApiOperation(value = "작품 상세 조회")
-//    public JSONObject showProducts(@PathVariable Long id) {
-//        try{
-//            Long currentUserId = UserUtils.getContextHolderId();
-//            return productService.showDetailForUser(currentUserId, id);
-//        }
-//        catch (UserNotFoundException | UserNotLoginException e){
-//            return productService.showDetailForGuest(id); /** 비회원용 **/
-//        }
-//    }
+    @PostMapping("/post/{id}")
+    @ApiOperation(value = "작품 상세 조회")
+    public JSONObject showProducts(@PathVariable Long id) {
+        return postService.showDetail(id);
+    }
 
 
-//    @ApiOperation(value = "마켓 작품")
-//    @PostMapping("/products")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-//                    value = "파라미터 형식으로 전달해주세요 (0..N) \nex) http://localhost:8080/api/products?page=3&size=5&stacks=orient,western\nhttp://localhost:8080/api/products?page=0&size=5&stacks=orient&stacks=western&sale=true  둘 다 가능합니다", defaultValue = "0"),
-//            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-//                    value = "3", defaultValue = "5"),
-//            @ApiImplicitParam(name = "align", dataType = "string", paramType = "query",
-//                    value = "정렬 기준\nrecommend - 신작추천순\n" +
-//                            "popular - 인기순(좋아요)\n" +
-//                            "recent - 최신순\n" +
-//                            "low - 낮은가격순\n" +
-//                            "high - 높은가격순", defaultValue = "recommend"),
-//            @ApiImplicitParam(name = "categories", dataType = "string", paramType = "query",
-//                    value = "categories(최대 3개)\n" +
-//                            "painting - 회화일반\n" +
-//                            "orient - 동양화\n" +
-//                            "sculpture - 조소\n" +
-//                            "print - 판화\n" +
-//                            "craft - 공예\n" +
-//                            "other - 기타", defaultValue = ""),
-//            @ApiImplicitParam(name = "sale", dataType = "boolean", paramType = "query",
-//                    value = "sale = false -> 모든 작품(디폴트)" +
-//                            "sale = true -> 판매중인 작품만(거래중도 포함, 거래완료는 X)" +
-//                            "생략시 판매중인 작품만 보기 버튼이 체크 되지 않은 상태라고 생각하시면 됩니다  어떤 파라미터명을써도 딱 맞아떨어지는게 없어서 sale로 갈게요", defaultValue = "false"),
-//            @ApiImplicitParam(name = "search", dataType = "string", paramType = "query",
-//                    value = "String 값으로 주시고 최소 2글자 이상은 받아야 합니다. contain 메서드로 db에서 검색할 예정.")
-//    })
-//    public PageImpl<ShowForm> showMarketProduct(@RequestParam(required=false, defaultValue="") String search, @RequestParam(required=false, defaultValue="") List<String> categories, @RequestParam(required=false, defaultValue="recommend") String align, @RequestParam(required=false, defaultValue="false") Boolean sale, @ApiIgnore Pageable pageable) {
-//        try{
-//            UserUtils.getContextHolderId();
-//            return productService.productListForUser(search, categories, align, sale, pageable);
-//        }
-//        catch (UserNotFoundException | UserNotLoginException e){
-//            return productService.productListForGuest(search, categories, align, sale, pageable);
-//        }
-//    }
+    @ApiOperation(value = "동행 요청 글 목록")
+    @GetMapping("/posts")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+                    value = "파라미터 형식으로 전달해주세요 (1..N) \nex) http://localhost:8080/posts?page=3&size=5", defaultValue = "1"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+                    value = "3", defaultValue = "5"),
+            @ApiImplicitParam(name = "search", dataType = "string", paramType = "query",
+                    value = "String 값으로 주시고 최소 2글자 이상은 받아야 합니다. contain 메서드로 db에서 검색할 예정.")
+    })
+    public PageImpl<ShowForm> showMarketProduct(@RequestParam(required=false, defaultValue="") String search, @ApiIgnore Pageable pageable) {
+        return postService.showPostList(search, pageable);
+    }
 }

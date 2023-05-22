@@ -10,11 +10,19 @@ import net.mapomi.mapomi.domain.Role;
 import net.mapomi.mapomi.domain.user.Disabled;
 import net.mapomi.mapomi.domain.user.User;
 import net.mapomi.mapomi.dto.request.PostBuildDto;
+import net.mapomi.mapomi.dto.response.DetailPostForm;
+import net.mapomi.mapomi.dto.response.ShowForm;
 import net.mapomi.mapomi.repository.PostRepository;
 import net.mapomi.mapomi.repository.UserRepository;
 import org.json.simple.JSONObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +38,11 @@ public class PostService {
         Post post = Post.builder()
                 .title(buildDto.getTitle())
                 .content(buildDto.getContent())
-                .schedule(buildDto.getSchedule())
                 .author(user.getNickName())
+                .schedule(buildDto.getSchedule())
+                .duration(buildDto.getDuration())
+                .departure(buildDto.getDeparture())
+                .destination(buildDto.getDestination())
                 .type(user.getType())
                 .build();
         post.setDisabled(user);
@@ -62,36 +73,37 @@ public class PostService {
         return PropertyUtil.response(true);
     }
 
-//
-//    @Transactional
-//    public JSONObject showDetailForGuest(Long id){   // 비회원 글 보기
-//        Product product = productRepository.findByIdFetchImages(id).orElseThrow(PostNotFoundException::new);
-//        DetailProductForm detailForm = makeProductDetailForm(product, product.getImages());
-//        if(!product.getUser().isDelete()){
-//            User postUser = product.getUser();
-//            detailForm.setUserInfo(postUser.getId(),postUser.getNickName(),postUser.getPicture(),postUser.getUniv(),postUser.isCert_uni(),postUser.isCert_author(), postUser.getFollowerNum());
-//        }
-//        else{
-//            detailForm.setUserInfo(null, "탈퇴한 회원", null, "??", false, false, "0");
-//        }
-//        detailForm.setUserAction(false,false,false);
-//        product.addViews();
-//        return PropertyUtil.response(detailForm);
-//    }
-//
-//
-//    @Transactional
-//    public PageImpl<ShowForm> productListForUser(String keyword, List<String> categories, String align, boolean complete, Pageable pageable){
-//        User user  = userRepository.findByIdFetchHistoryAndLikesList(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
-//        if(!keyword.isEmpty())
-//            saveSearchHistory(keyword, user);
-//        Page<Product> productList = QDSLRepository.findAllByCompleteAndCategoriesAligned(complete, keyword, categories, align, pageable);
-//
-//        List<ShowForm> showList = makeDetailHomeShowForms(user.getProductLikesList(), productList.getContent());
-//        return new PageImpl<>(showList, pageable, productList.getTotalElements());
-//    }
 
+    @Transactional
+    public JSONObject showDetail(Long id){
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        DetailPostForm detailForm = makePostDetail(post);
+        detailForm.setUserInfo(post.getDisabled());
+        post.addViews();
+        return PropertyUtil.response(detailForm);
+    }
 
+    private DetailPostForm makePostDetail(Post post) {
+        return DetailPostForm.builder()
+                .postId(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .views(post.getViews())
+                .schedule(post.getSchedule())
+                .duration(post.getDuration())
+                .departure(post.getDeparture())
+                .destination(post.getDestination())
+                .complete(post.isComplete())
+                .build();
+    }
 
-
+    @Transactional(readOnly = true)
+    public PageImpl<ShowForm> showPostList(String keyword, Pageable pageable){
+        Page<Post> posts = postRepository.findSearchedPageable(keyword, pageable);
+        List<ShowForm> showList = posts.getContent()
+                .stream()
+                .map(post -> new ShowForm(post.getId(), post.getTitle(), post.getCreatedDate().toString(), post.getSchedule(), post.getDeparture(), post.getDestination(), post.getDisabled().getPicture(), post.isComplete()))
+                .collect(Collectors.toList());
+        return new PageImpl<>(showList, pageable, showList.size());
+    }
 }

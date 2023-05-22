@@ -2,6 +2,7 @@ package net.mapomi.mapomi.service;
 
 import net.mapomi.mapomi.common.error.PostNotFoundException;
 import net.mapomi.mapomi.domain.Post;
+import net.mapomi.mapomi.dto.request.DetailJoinDto;
 import net.mapomi.mapomi.dto.request.JoinDto;
 import net.mapomi.mapomi.dto.request.LoginDto;
 import net.mapomi.mapomi.dto.request.PostBuildDto;
@@ -46,9 +47,9 @@ public class PostServiceTest {
     @BeforeAll
     @Transactional
     void before(){
-        JoinDto dto = new JoinDto("abc", "abc", "송인서", "0105013334", "로롤", true, "경기도 안양", 20, "시각 장애");
+        JoinDto dto = new JoinDto("abc", "01048424426");
         userCommandService.signup("disabled", dto);
-        TokenDto token = (TokenDto) userCommandService.login(new LoginDto("abc", "abc")).get("data");
+        TokenDto token = (TokenDto) userCommandService.login("abc").get("data");
         Authentication authentication = tokenProvider.getAuthentication(token.getAccessToken());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
@@ -61,7 +62,7 @@ public class PostServiceTest {
     @Transactional
     @Rollback(value = false)
     void build() {
-        userCommandService.login(new LoginDto("abc", "abc"));
+        userCommandService.login("abc");
         PostBuildDto buildDto1 = new PostBuildDto("등록 및 수정 테스트","내용1","2023-06-04T17:50:00","","","");
         PostBuildDto buildDto2 = new PostBuildDto("삭제 테스트","내용2","2023-06-04T17:50:00","","","");
         JSONObject response1 = postService.build(buildDto1);

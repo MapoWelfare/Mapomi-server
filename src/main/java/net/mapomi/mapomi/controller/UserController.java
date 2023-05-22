@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import net.mapomi.mapomi.common.ApiDocumentResponse;
+import net.mapomi.mapomi.dto.request.DetailJoinDto;
 import net.mapomi.mapomi.dto.request.JoinDto;
 import net.mapomi.mapomi.dto.request.LoginDto;
 import net.mapomi.mapomi.dto.request.NickNameDto;
@@ -37,20 +38,11 @@ public class UserController {
         return userCommandService.checkNickName(nickNameDto.getNickName());
     }
 
-    @ApiDocumentResponse
-    @ApiOperation(value = "이메일 중복체크", notes = "이메일 중복 시 에는 하단과 같이 반환됩니다 false면 가입 불가능한 이메일인거로 생각하시면 됩니다 \n{\n" +
-            "  \"success\": false,\n" +
-            "  \"message\": \"이미 가입된 이메일입니다.\"\n" +
-            "}", hidden = true)
-    @PostMapping("/check/id")
-    public JSONObject checkEmail(@RequestBody LoginDto dto) {
-        return userCommandService.checkId(dto.getId());
-    }
 
-    @ApiOperation(value = "로그인테스트", notes = "비밀번호 오류, 등등은 후에 추가할게")
+    @ApiOperation(value = "로그인테스트", notes = "닉네임 기반으로 테스트가능. 회원가입 했을 때의 닉네임쓰면 토큰 얻을 수 있")
     @PostMapping("/login")
     public JSONObject login(@RequestBody LoginDto dto) {
-        return userCommandService.login(dto);
+        return userCommandService.login(dto.getNickName());
     }
 
     @ApiOperation(value = "토큰 재발급", notes = "액세스, 리프레쉬 토큰 같이 줘야함!!")
