@@ -38,17 +38,11 @@ public class PostController {
     }
 
 
-//    @PostMapping("/products/{id}")
-//    @ApiOperation(value = "작품 상세 조회")
-//    public JSONObject showProducts(@PathVariable Long id) {
-//        try{
-//            Long currentUserId = UserUtils.getContextHolderId();
-//            return productService.showDetailForUser(currentUserId, id);
-//        }
-//        catch (UserNotFoundException | UserNotLoginException e){
-//            return productService.showDetailForGuest(id); /** 비회원용 **/
-//        }
-//    }
+    @PostMapping("/products/{id}")
+    @ApiOperation(value = "작품 상세 조회")
+    public JSONObject showProducts(@PathVariable Long id) {
+        return postService.showDetail(id);
+    }
 
 
 //    @ApiOperation(value = "마켓 작품")

@@ -1,5 +1,6 @@
 package net.mapomi.mapomi.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import net.mapomi.mapomi.common.BaseTimeEntity;
@@ -31,7 +32,16 @@ public class Post extends BaseTimeEntity {
     private int views = 2;
 
     @Column
-    private String schedule = "";
+    private String schedule = ""; //날짜+일시
+
+    @Column
+    private String duration = ""; //소요시간
+
+    @Column
+    private String departure;
+
+    @Column
+    private String destination;
 
     @Column
     private String type = "";
@@ -44,14 +54,18 @@ public class Post extends BaseTimeEntity {
     private Disabled disabled;
 
     @Builder
-    public Post(String title, String content, String author, String type, String schedule) {
+    public Post(String title, String content, String author, String schedule, String duration, String departure, String destination, String type) {
         this.title = title;
         this.content = content;
         this.author = author;
-        this.type = type;
         this.schedule = schedule;
-        this.views = 2;
+        this.duration = duration;
+        this.departure = departure;
+        this.destination = destination;
+        this.type = type;
     }
+
+    protected Post() {}
 
     public void editPost(PostBuildDto dto){
         this.title = dto.getTitle();
@@ -61,6 +75,10 @@ public class Post extends BaseTimeEntity {
 
     public void setDisabled(Disabled disabled) {
         this.disabled = disabled;
+    }
+
+    public void addViews() {
+        this.views+=2;
     }
 }
 
