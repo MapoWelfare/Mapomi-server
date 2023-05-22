@@ -10,10 +10,8 @@ import net.mapomi.mapomi.dto.request.NickNameDto;
 import net.mapomi.mapomi.jwt.TokenRequestDto;
 import net.mapomi.mapomi.service.UserCommandService;
 import org.json.simple.JSONObject;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -74,10 +72,10 @@ public class UserController {
 //        return userCommandService.updateUser(dto);
 //    }
 //
-//    @ApiDocumentResponse
-//    @ApiOperation(value = "프로필 이미지 변경")
-//    @PostMapping(value = "/users/edit/image")
-//    public JSONObject updateUserImage(@RequestPart MultipartFile multipartFile) {
-//        return userCommandService.updateUserImage(multipartFile);
-//    }
+    @ApiDocumentResponse
+    @ApiOperation(value = "프로필 이미지 변경")
+    @PostMapping(value = "/users/edit/image")
+    public JSONObject updateUserImage(@RequestPart MultipartFile multipartFile) {
+        return userCommandService.updateUserImage(multipartFile);
+    }
 }

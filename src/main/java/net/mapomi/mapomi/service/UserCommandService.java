@@ -11,11 +11,13 @@ import net.mapomi.mapomi.domain.user.Observer;
 import net.mapomi.mapomi.domain.user.User;
 import net.mapomi.mapomi.dto.request.JoinDto;
 import net.mapomi.mapomi.dto.request.LoginDto;
+import net.mapomi.mapomi.image.S3Service;
 import net.mapomi.mapomi.jwt.*;
 import net.mapomi.mapomi.repository.UserRepository;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -30,6 +32,7 @@ public class UserCommandService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtProvider;
     private final UserUtils userUtils;
+    private final S3Service imageService;
 
 
     public User saveTempUser(User user){
@@ -42,7 +45,7 @@ public class UserCommandService {
         if (!user.getPassword().equals(dto.getPassword())) {
             return PropertyUtil.responseMessage("비밀번호가 일치하지 않습니다.");
         }
-        TokenDto tokenDto = jwtProvider.createToken(user.getAccountId(), user.getId(), user.getRole());
+        TokenDto tokenDto = jwtProvider.createToken(user.getId(), user.getId(), user.getRole());
         //리프레시 토큰 저장
         RefreshToken refreshToken = RefreshToken.builder()
                 .key(user.getId())
@@ -57,7 +60,7 @@ public class UserCommandService {
     public TokenDto oAuthLogin(String email) { //소셜로그인
         User user = userRepository.findByAccountId(email).orElseThrow(UserNotFoundException::new);
 
-        TokenDto tokenDto = jwtProvider.createToken(user.getAccountId(), user.getId(), user.getRole());
+        TokenDto tokenDto = jwtProvider.createToken(user.getId(), user.getId(), user.getRole());
         if(user.getNickName().isEmpty())
             tokenDto.setJoined(false);
         //리프레시 토큰 저장
@@ -141,10 +144,26 @@ public class UserCommandService {
             throw new NoSuchElementException("리프레쉬 토큰 불일치");
 
         // AccessToken, RefreshToken 토큰 재발급, 리프레쉬 토큰 저장
-        TokenDto newCreatedToken = jwtProvider.createToken(user.getAccountId(), user.getId(), user.getRole());
+        TokenDto newCreatedToken = jwtProvider.createToken(user.getId(), user.getId(), user.getRole());
         RefreshToken updateRefreshToken = refreshToken.updateToken(newCreatedToken.getRefreshToken());
         refreshTokenRepository.save(updateRefreshToken);
 
         return PropertyUtil.response(newCreatedToken);
+    }
+
+    public JSONObject updateUserImage(MultipartFile multipartFile){
+        User loginUser = userUtils.getCurrentUser();
+        String url = imageService.uploadImage(multipartFile);
+        loginUser.setPicture(url);
+        userRepository.save(loginUser);
+        try{
+
+        }
+        catch (Exception e){
+            return PropertyUtil.responseMessage("이미지 저장 실패");
+        }
+        JSONObject obj = new JSONObject();
+        obj.put("picture", loginUser.getPicture());
+        return PropertyUtil.response(obj);
     }
 }

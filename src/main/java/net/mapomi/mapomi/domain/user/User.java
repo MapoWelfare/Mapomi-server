@@ -28,6 +28,7 @@ public class User extends BaseTimeEntity {
     private String nickName="";
 
     @Column
+    @Setter
     private String picture="";
 
     @Column
