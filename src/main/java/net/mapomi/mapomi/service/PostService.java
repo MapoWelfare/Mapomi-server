@@ -11,11 +11,18 @@ import net.mapomi.mapomi.domain.user.Disabled;
 import net.mapomi.mapomi.domain.user.User;
 import net.mapomi.mapomi.dto.request.PostBuildDto;
 import net.mapomi.mapomi.dto.response.DetailPostForm;
+import net.mapomi.mapomi.dto.response.ShowForm;
 import net.mapomi.mapomi.repository.PostRepository;
 import net.mapomi.mapomi.repository.UserRepository;
 import org.json.simple.JSONObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -88,5 +95,15 @@ public class PostService {
                 .destination(post.getDestination())
                 .complete(post.isComplete())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public PageImpl<ShowForm> showPostList(String keyword, Pageable pageable){
+        Page<Post> posts = postRepository.findSearchedPageable(keyword, pageable);
+        List<ShowForm> showList = posts.getContent()
+                .stream()
+                .map(post -> new ShowForm(post.getId(), post.getTitle(), post.getCreatedDate().toString(), post.getSchedule(), post.getDeparture(), post.getDestination(), post.getDisabled().getPicture(), post.isComplete()))
+                .collect(Collectors.toList());
+        return new PageImpl<>(showList, pageable, showList.size());
     }
 }

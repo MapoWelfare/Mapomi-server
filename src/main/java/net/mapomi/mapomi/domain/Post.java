@@ -49,7 +49,7 @@ public class Post extends BaseTimeEntity {
     @Column
     private boolean complete = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "disabled_id")
     private Disabled disabled;
 

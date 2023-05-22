@@ -33,7 +33,7 @@ public class Disabled extends User{
     @OneToMany(mappedBy = "disabled",cascade = CascadeType.MERGE)
     private List<Post> posts = new ArrayList<>();
 
-    @OneToOne(mappedBy = "disabled",cascade = CascadeType.MERGE)
+    @OneToOne(mappedBy = "disabled",cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private Observer observer;
 
 
