@@ -33,7 +33,6 @@ public class UserUtils {
         if (authentication == null) {
             throw new UserNotLoginException();
         }
-
         if (authentication.isAuthenticated()&& !CollectionUtils.containsAny(
                 authentication.getAuthorities(), notUserAuthority)){
             return Long.valueOf(authentication.getName());

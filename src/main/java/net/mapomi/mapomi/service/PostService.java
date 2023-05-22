@@ -23,6 +23,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final UserUtils userUtils;
+
     @Transactional(rollbackFor = {Exception.class})
     public JSONObject build(PostBuildDto buildDto){   // 글 생성
         Disabled user = userRepository.findDisabledById(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
@@ -40,7 +41,6 @@ public class PostService {
 
 
     @Transactional(rollbackFor = {Exception.class})
-//    @CacheEvict(value = {"home_user","home_guest"}, allEntries = true)
     public JSONObject edit(Long productId, PostBuildDto editDto){
         User user = userUtils.getCurrentUser();
         Post post = postRepository.findById(productId).orElseThrow(PostNotFoundException::new);
@@ -53,7 +53,6 @@ public class PostService {
     }
 
     @Transactional(rollbackFor = {Exception.class})
-//    @CacheEvict(value = {"home_user","home_guest"}, allEntries = true)
     public JSONObject delete(Long productId){
         Disabled user = userRepository.findDisabledById(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
         Post post = postRepository.findById(productId).orElseThrow(PostNotFoundException::new);
