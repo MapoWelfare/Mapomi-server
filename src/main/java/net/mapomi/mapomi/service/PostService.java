@@ -141,7 +141,7 @@ public class PostService {
     @Transactional
     public JSONObject getMatchRequest(Long postId){
         Long userId = userUtils.getCurrentUserId();
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        Post post = postRepository.findByIdFetchMatchRequests(postId).orElseThrow(PostNotFoundException::new);
         if(!post.getDisabled().getId().equals(userId)) return PropertyUtil.responseMessage("글 작성자가 아닙니다.");
         List<MatchRequestForm> matchRequestForms = post.getMatchRequests().stream()
                 .map(matchRequest-> MatchRequestForm.builder()
