@@ -12,7 +12,7 @@ import net.mapomi.mapomi.domain.user.User;
 import net.mapomi.mapomi.dto.request.DetailJoinDto;
 import net.mapomi.mapomi.dto.request.JoinDto;
 import net.mapomi.mapomi.dto.request.LoginDto;
-import net.mapomi.mapomi.image.S3Service;
+//import net.mapomi.mapomi.image.S3Service;
 import net.mapomi.mapomi.jwt.*;
 import net.mapomi.mapomi.repository.UserRepository;
 import org.json.simple.JSONObject;
@@ -33,7 +33,7 @@ public class UserCommandService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtProvider;
     private final UserUtils userUtils;
-    private final S3Service imageService;
+//    private final S3Service imageService;
 
 
     public User saveTempUser(User user){
@@ -117,8 +117,8 @@ public class UserCommandService {
 
     public JSONObject updateUserImage(MultipartFile multipartFile){
         User loginUser = userUtils.getCurrentUser();
-        String url = imageService.uploadImage(multipartFile);
-        loginUser.setPicture(url);
+//        String url = imageService.uploadImage(multipartFile);
+//        loginUser.setPicture(url);
         userRepository.save(loginUser);
         try{
 

@@ -45,6 +45,5 @@ public class User extends BaseTimeEntity {
         this.email = email;
         this.picture = picture;
     }
-
     protected User() {}
 }
