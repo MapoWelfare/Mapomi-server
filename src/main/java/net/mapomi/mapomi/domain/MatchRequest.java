@@ -21,7 +21,7 @@ public class MatchRequest {
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
-    private MatchRequestStatus matchRequestStatus;
+    private MatchRequestStatus matchRequestStatus = MatchRequestStatus.YET;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;

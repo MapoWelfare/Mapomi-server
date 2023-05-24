@@ -3,6 +3,7 @@ package net.mapomi.mapomi.domain;
 import lombok.Builder;
 import lombok.Getter;
 import net.mapomi.mapomi.common.BaseTimeEntity;
+import net.mapomi.mapomi.domain.user.Abled;
 import net.mapomi.mapomi.domain.user.Disabled;
 import net.mapomi.mapomi.dto.request.PostBuildDto;
 
@@ -59,6 +60,9 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post",cascade = CascadeType.MERGE)
     private Set<MatchRequest> matchRequests = new LinkedHashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Abled abledMatched;
+
     @Builder
     public Post(String title, String content, String author, String schedule, String duration, String departure, String destination, String type) {
         this.title = title;
@@ -73,6 +77,9 @@ public class Post extends BaseTimeEntity {
 
     protected Post() {}
 
+    public void setAbled(Abled abledMatched){
+        this.abledMatched = abledMatched;
+    }
     public void editPost(PostBuildDto dto){
         this.title = dto.getTitle();
         this.content = dto.getContent();
