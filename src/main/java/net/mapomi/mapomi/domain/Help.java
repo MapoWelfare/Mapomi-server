@@ -13,13 +13,13 @@ import java.util.Set;
 
 @Getter
 @Entity
-@SequenceGenerator(name = "Post_SEQ_GEN",sequenceName = "Post_SEQ")
-public class Post extends BaseTimeEntity {
+@SequenceGenerator(name = "Help_SEQ_GEN",sequenceName = "Help_SEQ")
+public class Help extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Post_SEQ")
-    @Column(name = "product_id")
-    private Long id;  //작품 번호
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Help_SEQ")
+    @Column(name = "help_id")
+    private Long id;
 
     @Column
     private String title;
@@ -64,7 +64,7 @@ public class Post extends BaseTimeEntity {
     private Abled abledMatched;
 
     @Builder
-    public Post(String title, String content, String author, String schedule, String duration, String departure, String destination, String type) {
+    public Help(String title, String content, String author, String schedule, String duration, String departure, String destination, String type) {
         this.title = title;
         this.content = content;
         this.author = author;
@@ -75,7 +75,7 @@ public class Post extends BaseTimeEntity {
         this.type = type;
     }
 
-    protected Post() {}
+    protected Help() {}
 
     public void setAbled(Abled abledMatched){
         this.abledMatched = abledMatched;
@@ -94,4 +94,3 @@ public class Post extends BaseTimeEntity {
         this.views+=2;
     }
 }
-
