@@ -22,7 +22,7 @@ public class OAuthController {
     private final OAuthService oAuthService;
     private final UserCommandService userService;
     private final String localURL = "http://localhost:8080";
-    private final String productURL = "http://3.35.250.204:8080";
+    private final String productURL = "https://mapomi.net";
     private String KAKAO_ID = "ad91fa142c08bdf6f047dfb348f53b10";
     @ApiOperation(value = "액세스토큰 body에 넣어주세요.", notes ="data 안에는 공통적으로 토큰과 회원가입여부(joined)가 있습니다., \n" +
             "joined = true -> 홈으로 보내면되고, " +
@@ -45,7 +45,7 @@ public class OAuthController {
     }
 
     @ApiOperation(value = "스프링용 카카오로그인 실행(인가코드)",notes = "로컬환경 : https://kauth.kakao.com/oauth/authorize?client_id=ad91fa142c08bdf6f047dfb348f53b10&redirect_uri=http://localhost:8080/login/oauth2/code/kakao&response_type=code\n" +
-            "배포환경 : https://kauth.kakao.com/oauth/authorize?client_id=ad91fa142c08bdf6f047dfb348f53b10&redirect_uri=http://3.35.250.204:8080/login/oauth2/code/kakao&response_type=code")
+            "배포환경 : https://kauth.kakao.com/oauth/authorize?client_id=ad91fa142c08bdf6f047dfb348f53b10&redirect_uri=https://mapomi.net/login/oauth2/code/kakao&response_type=code")
     @GetMapping("/test1")
     public String kakaoLogin() {
         return "로컬환경 : https://kauth.kakao.com/oauth/authorize?client_id="+KAKAO_ID +
