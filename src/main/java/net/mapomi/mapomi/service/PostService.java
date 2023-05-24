@@ -14,6 +14,7 @@ import net.mapomi.mapomi.domain.user.Disabled;
 import net.mapomi.mapomi.domain.user.User;
 import net.mapomi.mapomi.dto.request.PostBuildDto;
 import net.mapomi.mapomi.dto.response.DetailPostForm;
+import net.mapomi.mapomi.dto.response.MatchRequestForm;
 import net.mapomi.mapomi.dto.response.ShowForm;
 import net.mapomi.mapomi.repository.PostRepository;
 import net.mapomi.mapomi.repository.UserRepository;
@@ -124,12 +125,31 @@ public class PostService {
                 return PropertyUtil.responseMessage("이미 함께하기를 신청한 글입니다.");
             }
         }
+        MatchRequest matchRequest = makeNewMatchRequest(abled, post, matchRequests);
+        return PropertyUtil.response(matchRequest.getId());
+    }
+
+    private MatchRequest makeNewMatchRequest(Abled abled, Post post, Set<MatchRequest> matchRequests) {
         MatchRequest matchRequest = MatchRequest.builder()
                 .matchRequestStatus(MatchRequestStatus.YET)
                 .post(post)
                 .abled(abled)
                 .build();
         matchRequests.add(matchRequest);
-        return PropertyUtil.response(matchRequest.getId());
+        return matchRequest;
+    }
+    @Transactional
+    public JSONObject getMatchRequest(Long postId){
+        Long userId = userUtils.getCurrentUserId();
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        if(!post.getDisabled().getId().equals(userId)) return PropertyUtil.responseMessage("글 작성자가 아닙니다.");
+        List<MatchRequestForm> matchRequestForms = post.getMatchRequests().stream()
+                .map(matchRequest-> MatchRequestForm.builder()
+                        .matchRequestId(matchRequest.getId())
+                        .nickName(matchRequest.getAbled().getNickName())
+                        .picture(matchRequest.getAbled().getPicture())
+                        .build())
+                .collect(Collectors.toList());
+        return PropertyUtil.response(matchRequestForms);
     }
 }

@@ -73,4 +73,11 @@ public class PostController {
     public JSONObject matchRequest(@PathVariable Long id){
         return postService.matchRequest(id);
     }
+
+    @ApiDocumentResponse
+    @ApiOperation(value = "함께하기 목록 보기")
+    @GetMapping(value = "/posts/{id}/match-request")
+    public JSONObject getMatchRequest(@PathVariable Long id){
+        return postService.getMatchRequest(id);
+    }
 }
