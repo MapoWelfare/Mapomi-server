@@ -38,6 +38,8 @@ public class UserServiceTest {
     @Autowired
     UserCommandService userCommandService;
     @Autowired
+    UserQueryService userQueryService;
+    @Autowired
     UserRepository userRepository;
     @Autowired
     RefreshTokenRepository tokenRepository;
@@ -55,7 +57,7 @@ public class UserServiceTest {
 
     @Before
     public void setUp() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new UserController(userCommandService))
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new UserController(userCommandService,userQueryService))
                 .alwaysExpect(status().isOk())
                 .build();
 

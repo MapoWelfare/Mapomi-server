@@ -122,6 +122,7 @@ public class UserCommandService {
         userRepository.save(loginUser);
         try{
 
+
         }
         catch (Exception e){
             return PropertyUtil.responseMessage("이미지 저장 실패");

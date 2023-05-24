@@ -3,10 +3,13 @@ package net.mapomi.mapomi.domain;
 import lombok.Builder;
 import lombok.Getter;
 import net.mapomi.mapomi.common.BaseTimeEntity;
+import net.mapomi.mapomi.domain.user.Abled;
 import net.mapomi.mapomi.domain.user.Disabled;
 import net.mapomi.mapomi.dto.request.PostBuildDto;
 
 import javax.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -51,6 +54,17 @@ public class Accompany extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "disabled_id")
     private Disabled disabled;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "disabled_id")
+    private Abled abledMatched;
+
+    public void setAbledMatched(Abled abledMatched) {
+        this.abledMatched = abledMatched;
+    }
+
+    @OneToMany
+    private Set<MatchRequest> matchRequests = new LinkedHashSet<>();
 
     @Builder
     public Accompany(String title, String content, String author, String schedule, String duration, String departure, String destination, String type) {

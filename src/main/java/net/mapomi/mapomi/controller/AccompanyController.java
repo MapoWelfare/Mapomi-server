@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import net.mapomi.mapomi.common.ApiDocumentResponse;
+import net.mapomi.mapomi.common.UserUtils;
+import net.mapomi.mapomi.dto.request.MatchRequestDto;
 import net.mapomi.mapomi.dto.request.PostBuildDto;
 import net.mapomi.mapomi.dto.response.ShowForm;
 import net.mapomi.mapomi.service.AccompanyService;
@@ -65,4 +67,28 @@ public class AccompanyController {
     public PageImpl<ShowForm> showPosts(@RequestParam(required=false, defaultValue="") String search, @ApiIgnore Pageable pageable) {
         return accompanyService.showPostList(search, pageable);
     }
+
+    @ApiDocumentResponse
+    @ApiOperation(value = "함께하기")
+    @PostMapping(value = "/posts/{id}/match-request")
+    public JSONObject matchRequest(@PathVariable Long id){
+        return accompanyService.matchRequest(id);
+    }
+
+    @ApiDocumentResponse
+    @ApiOperation(value = "함께하기 목록 보기")
+    @GetMapping(value = "/posts/{id}/match-request")
+    public JSONObject getMatchRequest(@PathVariable Long id){
+        return accompanyService.getMatchRequest(id);
+    }
+
+    @ApiDocumentResponse
+    @ApiOperation(value = "수락하기")
+    @PostMapping(value = "/posts/{id}/match")
+    public JSONObject match(@PathVariable("id") Long postId,@RequestBody MatchRequestDto matchRequestDto){
+        return accompanyService.match(postId,matchRequestDto);
+    }
+
+
+
 }

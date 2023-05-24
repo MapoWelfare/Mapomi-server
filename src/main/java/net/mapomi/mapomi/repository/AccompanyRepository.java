@@ -18,4 +18,7 @@ public interface AccompanyRepository extends JpaRepository<Accompany, Long> {
 
     @Query("select a from Accompany a left join a.disabled where a.title like %:keyword% or a.content like %:keyword% order by a.createdDate desc")
     Page<Accompany> findSearchedPageable(@Param("keyword")String keyword, Pageable pageable);
+
+    @Query("select a from Accompany a left join fetch a.matchRequests where a.id = :id")
+    Optional<Accompany> findByIdFetchMatchRequests(@Param("id") Long id);
 }
