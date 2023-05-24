@@ -29,5 +29,9 @@ public class MatchRequest {
     @ManyToOne(fetch = FetchType.LAZY)
     private Abled abled;
 
+    public void setStatus(MatchRequestStatus matchRequestStatus){
+        this.matchRequestStatus = matchRequestStatus;
+    }
+
 
 }

@@ -12,6 +12,7 @@ import net.mapomi.mapomi.domain.Role;
 import net.mapomi.mapomi.domain.user.Abled;
 import net.mapomi.mapomi.domain.user.Disabled;
 import net.mapomi.mapomi.domain.user.User;
+import net.mapomi.mapomi.dto.request.MatchRequestDto;
 import net.mapomi.mapomi.dto.request.PostBuildDto;
 import net.mapomi.mapomi.dto.response.DetailPostForm;
 import net.mapomi.mapomi.dto.response.MatchRequestForm;
@@ -155,5 +156,18 @@ public class PostService {
                         .build())
                 .collect(Collectors.toList());
         return PropertyUtil.response(matchRequestForms);
+    }
+    @Transactional
+    public JSONObject match(Long postId, MatchRequestDto matchRequestDto){
+        Post post = postRepository.findByIdFetchMatchRequests(postId).orElseThrow(PostNotFoundException::new);
+        for(MatchRequest matchRequest : post.getMatchRequests()){
+            if(matchRequest.getId().equals(matchRequestDto.getMatchRequestId())) {
+                matchRequest.setStatus(MatchRequestStatus.MATCH);
+                post.setAbled(matchRequest.getAbled());
+                continue;
+            }
+            matchRequest.setStatus(MatchRequestStatus.REJECT);
+        }
+        return PropertyUtil.response(true);
     }
 }
