@@ -16,6 +16,7 @@ import net.mapomi.mapomi.dto.request.PostBuildDto;
 import net.mapomi.mapomi.dto.response.DetailPostForm;
 import net.mapomi.mapomi.dto.response.MatchRequestForm;
 import net.mapomi.mapomi.dto.response.ShowForm;
+import net.mapomi.mapomi.repository.MatchRequestRepository;
 import net.mapomi.mapomi.repository.PostRepository;
 import net.mapomi.mapomi.repository.UserRepository;
 import org.json.simple.JSONObject;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +37,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final MatchRequestRepository matchRequestRepository;
 
     private final UserUtils userUtils;
 
@@ -135,7 +138,7 @@ public class PostService {
                 .post(post)
                 .abled(abled)
                 .build();
-        matchRequests.add(matchRequest);
+        matchRequestRepository.save(matchRequest);
         return matchRequest;
     }
     @Transactional
@@ -143,7 +146,8 @@ public class PostService {
         Long userId = userUtils.getCurrentUserId();
         Post post = postRepository.findByIdFetchMatchRequests(postId).orElseThrow(PostNotFoundException::new);
         if(!post.getDisabled().getId().equals(userId)) return PropertyUtil.responseMessage("글 작성자가 아닙니다.");
-        List<MatchRequestForm> matchRequestForms = post.getMatchRequests().stream()
+        List<MatchRequest> matchRequests = matchRequestRepository.getMatchRequestByPostIdFetchAbled(postId);
+        List<MatchRequestForm> matchRequestForms = matchRequests.stream()
                 .map(matchRequest-> MatchRequestForm.builder()
                         .matchRequestId(matchRequest.getId())
                         .nickName(matchRequest.getAbled().getNickName())
