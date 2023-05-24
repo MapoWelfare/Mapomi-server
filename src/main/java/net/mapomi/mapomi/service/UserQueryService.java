@@ -31,5 +31,11 @@ public class UserQueryService {
         return PropertyUtil.response(profileForm);
     }
 
+//    public JSONObject getMyPost(){
+//        User loginUser = userRepository.findById()
+//
+//
+//    }
+
 
 }

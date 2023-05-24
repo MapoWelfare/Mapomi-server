@@ -26,6 +26,8 @@ public class Abled extends User{
     @Column
     private int popularity=0;
 
+
+
     public Abled(JoinDto dto) {
         super(dto.getNickname(), "", Role.setRole("abled"));
     }

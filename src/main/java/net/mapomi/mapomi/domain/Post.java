@@ -1,6 +1,5 @@
 package net.mapomi.mapomi.domain;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import net.mapomi.mapomi.common.BaseTimeEntity;
@@ -45,6 +44,8 @@ public class Post extends BaseTimeEntity {
 
     @Column
     private String type = "";
+
+    @Enumerated(value = EnumType.STRING)
 
     @Column
     private boolean complete = false;
