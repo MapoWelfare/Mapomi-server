@@ -7,6 +7,8 @@ import net.mapomi.mapomi.domain.user.Disabled;
 import net.mapomi.mapomi.dto.request.PostBuildDto;
 
 import javax.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -53,6 +55,9 @@ public class Post extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "disabled_id")
     private Disabled disabled;
+
+    @OneToMany(mappedBy = "post",cascade = CascadeType.MERGE)
+    private Set<MatchRequest> matchRequests = new LinkedHashSet<>();
 
     @Builder
     public Post(String title, String content, String author, String schedule, String duration, String departure, String destination, String type) {

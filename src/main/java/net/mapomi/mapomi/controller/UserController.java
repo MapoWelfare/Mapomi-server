@@ -74,8 +74,8 @@ public class UserController {
     }
 
     @ApiDocumentResponse
-    @ApiOperation(value = "프로필 가져오기, ")
-    @PostMapping(value ="/users/myPage")
+    @ApiOperation(value = "내 프로필 가져오기")
+    @PostMapping(value ="/users/my-profile")
     public JSONObject getMyPage(){
         return userQueryService.getMyProfile();
     }

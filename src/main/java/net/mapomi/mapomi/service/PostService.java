@@ -5,8 +5,11 @@ import net.mapomi.mapomi.common.PropertyUtil;
 import net.mapomi.mapomi.common.UserUtils;
 import net.mapomi.mapomi.common.error.PostNotFoundException;
 import net.mapomi.mapomi.common.error.UserNotFoundException;
+import net.mapomi.mapomi.domain.Enum.MatchRequestStatus;
+import net.mapomi.mapomi.domain.MatchRequest;
 import net.mapomi.mapomi.domain.Post;
 import net.mapomi.mapomi.domain.Role;
+import net.mapomi.mapomi.domain.user.Abled;
 import net.mapomi.mapomi.domain.user.Disabled;
 import net.mapomi.mapomi.domain.user.User;
 import net.mapomi.mapomi.dto.request.PostBuildDto;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +34,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+
     private final UserUtils userUtils;
 
     @Transactional(rollbackFor = {Exception.class})
@@ -105,5 +110,26 @@ public class PostService {
                 .map(post -> new ShowForm(post.getId(), post.getTitle(), post.getCreatedDate().toString(), post.getSchedule(), post.getDeparture(), post.getDestination(), post.getDisabled().getPicture(), post.isComplete()))
                 .collect(Collectors.toList());
         return new PageImpl<>(showList, pageable, showList.size());
+    }
+
+
+    @Transactional
+    public JSONObject matchRequest(Long postId){
+        Long userId = userUtils.getCurrentUserId();
+        Abled abled = userRepository.findAbledByIdFetchMatchRequest(userId).orElseThrow(UserNotFoundException::new);
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        Set<MatchRequest> matchRequests = abled.getMatchRequests();
+        for(MatchRequest matchRequest : matchRequests){
+            if(matchRequest.getPost().getId().equals(postId)){ //이미 신청한 것
+                return PropertyUtil.responseMessage("이미 함께하기를 신청한 글입니다.");
+            }
+        }
+        MatchRequest matchRequest = MatchRequest.builder()
+                .matchRequestStatus(MatchRequestStatus.YET)
+                .post(post)
+                .abled(abled)
+                .build();
+        matchRequests.add(matchRequest);
+        return PropertyUtil.response(matchRequest.getId());
     }
 }

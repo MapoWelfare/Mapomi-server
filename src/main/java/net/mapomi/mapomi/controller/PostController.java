@@ -66,4 +66,11 @@ public class PostController {
     public PageImpl<ShowForm> showMarketProduct(@RequestParam(required=false, defaultValue="") String search, @ApiIgnore Pageable pageable) {
         return postService.showPostList(search, pageable);
     }
+
+    @ApiDocumentResponse
+    @ApiOperation(value = "함께하기")
+    @PostMapping(value = "/posts/{id}/match-request")
+    public JSONObject matchRequest(@PathVariable Long id){
+        return postService.matchRequest(id);
+    }
 }
