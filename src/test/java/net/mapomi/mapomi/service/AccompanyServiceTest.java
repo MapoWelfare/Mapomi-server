@@ -1,14 +1,12 @@
 package net.mapomi.mapomi.service;
 
 import net.mapomi.mapomi.common.error.PostNotFoundException;
-import net.mapomi.mapomi.domain.Post;
-import net.mapomi.mapomi.dto.request.DetailJoinDto;
+import net.mapomi.mapomi.domain.Accompany;
 import net.mapomi.mapomi.dto.request.JoinDto;
-import net.mapomi.mapomi.dto.request.LoginDto;
 import net.mapomi.mapomi.dto.request.PostBuildDto;
 import net.mapomi.mapomi.jwt.JwtTokenProvider;
 import net.mapomi.mapomi.jwt.TokenDto;
-import net.mapomi.mapomi.repository.PostRepository;
+import net.mapomi.mapomi.repository.AccompanyRepository;
 import org.json.simple.JSONObject;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +27,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class PostServiceTest {
+public class AccompanyServiceTest {
     @Autowired
     UserCommandService userCommandService;
     @Autowired
-    PostService postService;
+    AccompanyService accompanyService;
     @Autowired
-    PostRepository postRepository;
+    AccompanyRepository accompanyRepository;
     @Autowired
     JwtTokenProvider tokenProvider;
     @Autowired
@@ -65,14 +63,14 @@ public class PostServiceTest {
         userCommandService.login("abc");
         PostBuildDto buildDto1 = new PostBuildDto("등록 및 수정 테스트","내용1","2023-06-04T17:50:00","","","");
         PostBuildDto buildDto2 = new PostBuildDto("삭제 테스트","내용2","2023-06-04T17:50:00","","","");
-        JSONObject response1 = postService.build(buildDto1);
-        JSONObject response2 = postService.build(buildDto2);
+        JSONObject response1 = accompanyService.build(buildDto1);
+        JSONObject response2 = accompanyService.build(buildDto2);
         Long id1 = (Long) response1.get("id");
         Long id2 = (Long) response2.get("id");
         buildPostId = id1;
         deletePostId = id2;
-        Optional<Post> post1 = postRepository.findById(buildPostId);
-        Optional<Post> post2 = postRepository.findById(deletePostId);
+        Optional<Accompany> post1 = accompanyRepository.findById(buildPostId);
+        Optional<Accompany> post2 = accompanyRepository.findById(deletePostId);
         assertTrue(post1.isPresent() && post2.isPresent());
     }
 
@@ -82,9 +80,9 @@ public class PostServiceTest {
     @Transactional
     @Rollback(value = false)
     void delete() {
-        postService.delete(deletePostId);
-        assertTrue((postRepository.findById(deletePostId).isEmpty()));
-        assertNotEquals(2, postRepository.count());
+        accompanyService.delete(deletePostId);
+        assertTrue((accompanyRepository.findById(deletePostId).isEmpty()));
+        assertNotEquals(2, accompanyRepository.count());
     }
 
     @Test
@@ -93,9 +91,9 @@ public class PostServiceTest {
     @Transactional
     @Rollback(value = false)
     void edit() {
-        postService.edit(buildPostId,new PostBuildDto("수정완료","수정내용","2023-06-11T17:50:00","","",""));
-        Post post = postRepository.findById(buildPostId).orElseThrow(PostNotFoundException::new);
-        assertTrue(post.getTitle().equals("수정완료"));
-        assertTrue(post.getContent().equals("수정내용"));
+        accompanyService.edit(buildPostId,new PostBuildDto("수정완료","수정내용","2023-06-11T17:50:00","","",""));
+        Accompany accompany = accompanyRepository.findById(buildPostId).orElseThrow(PostNotFoundException::new);
+        assertTrue(accompany.getTitle().equals("수정완료"));
+        assertTrue(accompany.getContent().equals("수정내용"));
     }
 }
