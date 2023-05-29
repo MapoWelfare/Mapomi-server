@@ -72,19 +72,8 @@ public class UserCommandService {
     }
 
     public JSONObject signup(String type, JoinDto joinInfo) throws NullPointerException {
-        Long userId = userUtils.getCurrentUserId();
-        if(type.equals("disabled")){
-            Disabled disabled = userRepository.findDisabledById(userId).orElseThrow(UserNotFoundException::new);
-            disabled.setJoinInfo(joinInfo);
-        }
-        else if(type.equals("abled")){
-            Abled abled = userRepository.findAbledById(userId).orElseThrow(UserNotFoundException::new);
-            abled.setJoinInfo(joinInfo);
-        }
-        else{
-            Observer observer = userRepository.findObserverById(userId).orElseThrow(UserNotFoundException::new);
-            observer.setJoinInfo(joinInfo);
-        }
+        User user = userUtils.getCurrentUser();
+        user.setJoinInfo(type, joinInfo);
         return PropertyUtil.response(true);
     }
 
