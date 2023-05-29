@@ -10,13 +10,14 @@ import javax.persistence.*;
 
 @Getter
 @Entity
+@SequenceGenerator(name = "User_SEQ_GEN",sequenceName = "User_SEQ")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @DiscriminatorColumn
 public class User extends BaseTimeEntity {
 
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "User_SEQ")
     private Long id;
 
     @Column
@@ -37,7 +38,7 @@ public class User extends BaseTimeEntity {
 
     @Setter
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.NONE;
 
     public User(String nickName, String picture, Role role) {
         this.nickName = nickName;
