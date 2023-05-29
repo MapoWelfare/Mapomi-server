@@ -4,13 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import net.mapomi.mapomi.common.BaseTimeEntity;
 import net.mapomi.mapomi.domain.Role;
+import net.mapomi.mapomi.dto.request.JoinDto;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "DTYPE")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@DiscriminatorColumn
 public class User extends BaseTimeEntity {
 
     @Id
@@ -21,12 +22,15 @@ public class User extends BaseTimeEntity {
     @Column
     private String nickName="";
 
-    @Column
     @Setter
+    @Column
     private String picture="";
 
     @Column
     private String email="";
+
+    @Column
+    private String phoneNum="";
 
     @Column
     private boolean certified =false;
@@ -47,4 +51,10 @@ public class User extends BaseTimeEntity {
     }
 
     protected User() {}
+
+    public void setJoinInfo(JoinDto dto) {
+        this.nickName = dto.getNickname();
+        this.phoneNum = dto.getPhoneNum();
+    }
+
 }
