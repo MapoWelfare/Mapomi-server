@@ -1,7 +1,7 @@
 package net.mapomi.mapomi.domain.user;
 
 import lombok.Getter;
-import net.mapomi.mapomi.domain.Post;
+import net.mapomi.mapomi.domain.Accompany;
 import net.mapomi.mapomi.domain.Role;
 import net.mapomi.mapomi.dto.request.JoinDto;
 
@@ -29,7 +29,7 @@ public class Disabled extends User{
     private String type;
 
     @OneToMany(mappedBy = "disabled",cascade = CascadeType.MERGE)
-    private List<Post> posts = new ArrayList<>();
+    private List<Accompany> accompanies = new ArrayList<>();
 
     @OneToOne(mappedBy = "disabled",cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private Observer observer;

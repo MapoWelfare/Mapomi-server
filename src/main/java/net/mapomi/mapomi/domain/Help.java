@@ -1,6 +1,5 @@
 package net.mapomi.mapomi.domain;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import net.mapomi.mapomi.common.BaseTimeEntity;
@@ -11,13 +10,13 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-@SequenceGenerator(name = "Post_SEQ_GEN",sequenceName = "Post_SEQ")
-public class Post extends BaseTimeEntity {
+@SequenceGenerator(name = "Help_SEQ_GEN",sequenceName = "Help_SEQ")
+public class Help extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Post_SEQ")
-    @Column(name = "product_id")
-    private Long id;  //작품 번호
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Help_SEQ")
+    @Column(name = "help_id")
+    private Long id;
 
     @Column
     private String title;
@@ -54,7 +53,7 @@ public class Post extends BaseTimeEntity {
     private Disabled disabled;
 
     @Builder
-    public Post(String title, String content, String author, String schedule, String duration, String departure, String destination, String type) {
+    public Help(String title, String content, String author, String schedule, String duration, String departure, String destination, String type) {
         this.title = title;
         this.content = content;
         this.author = author;
@@ -65,7 +64,7 @@ public class Post extends BaseTimeEntity {
         this.type = type;
     }
 
-    protected Post() {}
+    protected Help() {}
 
     public void editPost(PostBuildDto dto){
         this.title = dto.getTitle();
@@ -81,4 +80,3 @@ public class Post extends BaseTimeEntity {
         this.views+=2;
     }
 }
-
