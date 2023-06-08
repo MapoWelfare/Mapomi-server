@@ -3,7 +3,6 @@ package net.mapomi.mapomi.domain.user;
 import lombok.Getter;
 import net.mapomi.mapomi.domain.MatchRequest;
 import net.mapomi.mapomi.domain.Role;
-import net.mapomi.mapomi.dto.request.DetailJoinDto;
 import net.mapomi.mapomi.dto.request.JoinDto;
 
 import javax.persistence.*;
@@ -34,8 +33,8 @@ public class Abled extends User{
 
 
 
-    public Abled(JoinDto dto) {
-        super(dto.getEmail(),dto.getNickname(), "", Role.setRole("abled"));
+    public Abled(JoinDto dto,String email) {
+        super(email,dto.getNickname(), "", Role.setRole("abled"));
     }
 
     protected Abled() {}

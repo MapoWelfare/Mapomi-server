@@ -9,6 +9,7 @@ import net.mapomi.mapomi.domain.user.Abled;
 import net.mapomi.mapomi.domain.user.Disabled;
 import net.mapomi.mapomi.domain.user.Observer;
 import net.mapomi.mapomi.domain.user.User;
+import net.mapomi.mapomi.dto.OAuthAttributes;
 import net.mapomi.mapomi.dto.request.DetailJoinDto;
 import net.mapomi.mapomi.dto.request.JoinDto;
 import net.mapomi.mapomi.dto.request.LoginDto;
@@ -16,10 +17,12 @@ import net.mapomi.mapomi.image.S3Service;
 import net.mapomi.mapomi.jwt.*;
 import net.mapomi.mapomi.repository.UserRepository;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -34,6 +37,7 @@ public class UserCommandService {
     private final JwtTokenProvider jwtProvider;
     private final UserUtils userUtils;
     private final S3Service imageService;
+    private final OAuthService oAuthService;
 
 
     public User saveTempUser(User user){
@@ -65,24 +69,25 @@ public class UserCommandService {
                 .key(user.getId())
                 .token(tokenDto.getRefreshToken())
                 .build();
-
         refreshTokenRepository.save(refreshToken);
 
 
         return tokenDto;
     }
 
-    public JSONObject signup(String type, JoinDto joinInfo) throws NullPointerException { //아이디 비번 이름 생일 통신사 번호 저장
+    public JSONObject signup(String type, JoinDto joinInfo) throws NullPointerException, IOException, ParseException { //아이디 비번 이름 생일 통신사 번호 저장
+        JSONObject OauthInfo = oAuthService.getOauthInfo(joinInfo.getAccessToken());
+        OAuthAttributes OauthUser = OAuthAttributes.of(OauthInfo);
         if(type.equals("disabled")){
-            Disabled user = new Disabled(joinInfo);
+            Disabled user = new Disabled(joinInfo,OauthUser.getEmail());
             userRepository.save(user);
         }
         else if(type.equals("abled")){
-            Abled user = new Abled(joinInfo);
+            Abled user = new Abled(joinInfo,OauthUser.getEmail());
             userRepository.save(user);
         }
         else{
-            Observer user = new Observer(joinInfo);
+            Observer user = new Observer(joinInfo,OauthUser.getEmail());
             userRepository.save(user);
         }
         return PropertyUtil.response(true);

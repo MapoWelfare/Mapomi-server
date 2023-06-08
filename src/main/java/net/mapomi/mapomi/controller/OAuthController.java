@@ -29,7 +29,7 @@ public class OAuthController {
             "joined = false 면 /join api 처리할 수 있게 회원가입 창으로 보내주시면 될 것 같아여")
     @PostMapping(value = "/oauth/get")
     public JSONObject getOauthToken(@org.springframework.web.bind.annotation.RequestBody OauthDto tokenDto) throws Exception {
-        JSONObject OauthInfo = oAuthService.getOauthInfo(tokenDto);
+        JSONObject OauthInfo = oAuthService.getOauthInfo(tokenDto.getAccessToken());
         OAuthAttributes OauthUser = OAuthAttributes.of(OauthInfo);
         if(OauthUser.getEmail() == null || OauthUser.getEmail().isBlank())
             return PropertyUtil.responseMessage("회원가입 불가능(소셜로그인 실패)");
