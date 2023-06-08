@@ -34,5 +34,11 @@ public class Disabled extends User{
     @OneToOne(mappedBy = "disabled",cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private Observer observer;
 
+
+    public Disabled(JoinDto dto)
+    {
+        super(dto.getNickname(), "", Role.setRole("disabled"));
+    }
+
     protected Disabled() {super();}
 }
