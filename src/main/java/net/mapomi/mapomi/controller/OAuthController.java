@@ -40,6 +40,7 @@ public class OAuthController {
         }
         catch (Exception e){
             jwtToken = new TokenDto();
+            jwtToken.setJoined(false);
             return PropertyUtil.response(jwtToken);
         }
     }
