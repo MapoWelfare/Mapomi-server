@@ -42,7 +42,7 @@ public class AccompanyService {
 
     @Transactional(rollbackFor = {Exception.class})
     public JSONObject build(PostBuildDto buildDto){   // 글 생성
-        Disabled user = (Disabled) userRepository.findDisabledById(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
+        Disabled user =  userRepository.findDisabledById(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
         Accompany accompany = Accompany.builder()
                 .title(buildDto.getTitle())
                 .content(buildDto.getContent())

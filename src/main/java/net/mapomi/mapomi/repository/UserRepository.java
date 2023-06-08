@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByNickName(@Param("nickName")String nickName);
 
     @Query("select u from User u where u.id = :id")
-    Optional<User> findDisabledById(@Param("id")Long id);
+    Optional<Disabled> findDisabledById(@Param("id")Long id);
 
     @Query("select a from Abled a left join fetch a.matchRequests where a.id = :id")
     Optional<Abled> findAbledByIdFetchMatchRequest(@Param("id")Long id);
