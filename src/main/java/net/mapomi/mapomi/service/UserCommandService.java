@@ -62,16 +62,13 @@ public class UserCommandService {
         User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
 
         TokenDto tokenDto = jwtProvider.createToken(user.getId(), user.getId(), user.getRole());
-        if(user.getNickName().isEmpty())
-            tokenDto.setJoined(false);
+
         //리프레시 토큰 저장
         RefreshToken refreshToken = RefreshToken.builder()
                 .key(user.getId())
                 .token(tokenDto.getRefreshToken())
                 .build();
         refreshTokenRepository.save(refreshToken);
-
-
         return tokenDto;
     }
 
