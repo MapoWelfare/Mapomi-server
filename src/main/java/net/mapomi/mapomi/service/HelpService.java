@@ -33,7 +33,7 @@ public class HelpService {
 
     @Transactional(rollbackFor = {Exception.class})
     public JSONObject build(PostBuildDto buildDto){   // 글 생성
-        Disabled user = userRepository.findDisabledById(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
+        Disabled user = (Disabled) userRepository.findDisabledById(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
         Help help = Help.builder()
                 .title(buildDto.getTitle())
                 .content(buildDto.getContent())
@@ -64,7 +64,7 @@ public class HelpService {
 
     @Transactional(rollbackFor = {Exception.class})
     public JSONObject delete(Long postId){
-        Disabled user = userRepository.findDisabledById(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
+        Disabled user = (Disabled) userRepository.findDisabledById(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
         Help help = helpRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         if(!user.getId().equals(help.getDisabled().getId()) && user.getRole() != Role.DISABLED)
             return PropertyUtil.responseMessage("글 작성자가 아닙니다.");

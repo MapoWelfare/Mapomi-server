@@ -11,6 +11,6 @@ import java.util.Set;
 
 public interface MatchRequestRepository extends JpaRepository<MatchRequest,Long> {
 
-    @Query("select mr from MatchRequest mr left join fetch mr.abled where mr.post.id = :id")
-    List<MatchRequest> getMatchRequestByPostIdFetchAbled(@Param("id") Long postId);
+    @Query("select mr from MatchRequest mr left join fetch mr.abled where mr.accompany.id = :id")
+    List<MatchRequest> getMatchRequestByAccompanyIdFetchAbled(@Param("id") Long postId);
 }

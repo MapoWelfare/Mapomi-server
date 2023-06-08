@@ -48,7 +48,7 @@ public class Help extends BaseTimeEntity {
     @Column
     private String type = "";
 
-    @Enumerated(value = EnumType.STRING)
+
 
     @Column
     private boolean complete = false;
@@ -57,10 +57,11 @@ public class Help extends BaseTimeEntity {
     @JoinColumn(name = "disabled_id")
     private Disabled disabled;
 
-    @OneToMany(mappedBy = "post",cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "help",cascade = CascadeType.MERGE)
     private Set<MatchRequest> matchRequests = new LinkedHashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "abled_id")
     private Abled abledMatched;
 
     @Builder
