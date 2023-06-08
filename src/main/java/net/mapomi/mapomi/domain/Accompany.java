@@ -56,14 +56,14 @@ public class Accompany extends BaseTimeEntity {
     private Disabled disabled;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "disabled_id")
+    @JoinColumn(name = "abled_id")
     private Abled abledMatched;
 
     public void setAbledMatched(Abled abledMatched) {
         this.abledMatched = abledMatched;
     }
 
-    @OneToMany
+    @OneToMany(mappedBy = "accompany",cascade = CascadeType.MERGE)
     private Set<MatchRequest> matchRequests = new LinkedHashSet<>();
 
     @Builder

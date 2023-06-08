@@ -27,6 +27,9 @@ public class MatchRequest {
     private Accompany accompany;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    private Help help;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Abled abled;
 
     public void setStatus(MatchRequestStatus matchRequestStatus){

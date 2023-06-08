@@ -145,7 +145,7 @@ public class AccompanyService {
         Long userId = userUtils.getCurrentUserId();
         Accompany accompany = accompanyRepository.findByIdFetchMatchRequests(postId).orElseThrow(PostNotFoundException::new);
         if(!accompany.getDisabled().getId().equals(userId)) return PropertyUtil.responseMessage("글 작성자가 아닙니다.");
-        List<MatchRequest> matchRequests = matchRequestRepository.getMatchRequestByPostIdFetchAbled(postId);
+        List<MatchRequest> matchRequests = matchRequestRepository.getMatchRequestByAccompanyIdFetchAbled(postId);
         List<MatchRequestForm> matchRequestForms = matchRequests.stream()
                 .map(matchRequest-> MatchRequestForm.builder()
                         .matchRequestId(matchRequest.getId())
