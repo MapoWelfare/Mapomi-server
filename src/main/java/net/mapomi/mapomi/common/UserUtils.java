@@ -2,6 +2,7 @@ package net.mapomi.mapomi.common;
 
 import lombok.RequiredArgsConstructor;
 import net.mapomi.mapomi.common.error.UserNotLoginException;
+import net.mapomi.mapomi.domain.Role;
 import net.mapomi.mapomi.domain.user.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,6 +27,9 @@ public class UserUtils {
 
     public User getCurrentUser() {
         return userAdaptor.queryUser(getCurrentUserId());
+    }
+    public User getCurrentUser(String role) {
+        return userAdaptor.queryUser(getCurrentUserId(), role);
     }
 
     public static Long getContextHolderId() {
