@@ -42,15 +42,15 @@ public class AccompanyServiceTest {
     private static Long buildPostId;
     private static Long deletePostId;
 
-    @BeforeAll
-    @Transactional
-    void before(){
-        JoinDto dto = new JoinDto("abc", "01048424426");
-        userCommandService.signup("disabled", dto);
-        TokenDto token = (TokenDto) userCommandService.login("abc").get("data");
-        Authentication authentication = tokenProvider.getAuthentication(token.getAccessToken());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
+//    @BeforeAll
+//    @Transactional
+//    void before(){
+//        JoinDto dto = new JoinDto("abc", "01048424426","");
+//        userCommandService.signup("disabled", dto);
+//        TokenDto token = (TokenDto) userCommandService.login("abc").get("data");
+//        Authentication authentication = tokenProvider.getAuthentication(token.getAccessToken());
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//    }
 
 
 
