@@ -9,13 +9,16 @@ import net.mapomi.mapomi.dto.request.JoinDto;
 import net.mapomi.mapomi.dto.request.LoginDto;
 import net.mapomi.mapomi.dto.request.NickNameDto;
 import net.mapomi.mapomi.jwt.TokenRequestDto;
+import net.mapomi.mapomi.service.OAuthService;
 import net.mapomi.mapomi.service.UserCommandService;
 import net.mapomi.mapomi.service.UserQueryService;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Api(tags = "유저-명령")
 @RestController
@@ -25,11 +28,10 @@ public class UserController {
     private final UserCommandService userCommandService;
     private final UserQueryService userQueryService;
 
-
     @ApiDocumentResponse
     @ApiOperation(value = "회원가입", notes = "쿼리 파라미터에 /join?type=abled 이런식으로 주기. disabled가 디폴트고, abled, observer는 쿼리파라미터로 줘야함. + JoinDto")
     @PostMapping("/join")
-    public JSONObject join(@RequestParam(name = "type", defaultValue = "disabled") String type,  @Valid @RequestBody JoinDto dto) {
+    public JSONObject join(@RequestParam(name = "type", defaultValue = "disabled") String type,  @Valid @RequestBody JoinDto dto) throws IOException, ParseException {
         return userCommandService.signup(type, dto);
     }
 

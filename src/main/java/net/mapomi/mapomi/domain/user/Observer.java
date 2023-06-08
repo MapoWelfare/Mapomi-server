@@ -2,7 +2,6 @@ package net.mapomi.mapomi.domain.user;
 
 import lombok.Getter;
 import net.mapomi.mapomi.domain.Role;
-import net.mapomi.mapomi.dto.request.DetailJoinDto;
 import net.mapomi.mapomi.dto.request.JoinDto;
 
 import javax.persistence.*;
@@ -18,7 +17,8 @@ public class Observer extends User{
     private Disabled disabled;
 
 
-    public Observer(JoinDto dto) {super(dto.getNickname(), "", Role.setRole("observer"));}
+    public Observer(JoinDto dto,String email) {super(email,dto.getNickname(), "", Role.setRole("observer"));}
+
 
 
     protected Observer() {}

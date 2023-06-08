@@ -9,9 +9,14 @@ public class JoinDto {
     String nickname;
     @ApiModelProperty(example = "폰 번호")
     String phoneNum;
+    @ApiModelProperty(example = "엑세스 토큰")
+    String accessToken;
 
-    public JoinDto(String nickname, String phoneNum) {
+
+
+    public JoinDto(String nickname, String phoneNum,String accessToken) {
         this.nickname = nickname;
         this.phoneNum = phoneNum;
+        this.accessToken = accessToken;
     }
 }

@@ -18,8 +18,8 @@ public class OAuthService {
     private static final OkHttpClient client = new OkHttpClient();
     private String KAKAO_ID = "ad91fa142c08bdf6f047dfb348f53b10";
 
-    public JSONObject getOauthInfo(OauthDto tokenDto) throws IOException, ParseException {
-        return getKakaoInfo(tokenDto.getAccessToken());
+    public JSONObject getOauthInfo(String token) throws IOException, ParseException {
+        return getKakaoInfo(token);
     }
 
     public JSONObject getKakaoAccessToken(String redirect_uri, String code) throws IOException, ParseException {
