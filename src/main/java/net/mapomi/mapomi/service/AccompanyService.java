@@ -42,7 +42,7 @@ public class AccompanyService {
 
     @Transactional(rollbackFor = {Exception.class})
     public JSONObject build(PostBuildDto buildDto){   // 글 생성
-        Disabled user = userRepository.findDisabledById(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
+        Disabled user = (Disabled) userRepository.findDisabledById(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
         Accompany accompany = Accompany.builder()
                 .title(buildDto.getTitle())
                 .content(buildDto.getContent())
@@ -73,7 +73,7 @@ public class AccompanyService {
 
     @Transactional(rollbackFor = {Exception.class})
     public JSONObject delete(Long postId){
-        Disabled user = userRepository.findDisabledById(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
+        Disabled user = (Disabled) userRepository.findDisabledById(userUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
         Accompany accompany = accompanyRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         if(!user.getId().equals(accompany.getDisabled().getId()) && user.getRole() != Role.DISABLED)
             return PropertyUtil.responseMessage("글 작성자가 아닙니다.");
