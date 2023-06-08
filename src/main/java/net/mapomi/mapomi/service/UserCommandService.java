@@ -87,7 +87,7 @@ public class UserCommandService {
             Observer user = new Observer(joinInfo,OauthUser.getEmail());
             userRepository.save(user);
         }
-        return PropertyUtil.response(true);
+        return PropertyUtil.response(oAuthLogin(OauthUser.getEmail()));
     }
 
     @Transactional(readOnly = true)
