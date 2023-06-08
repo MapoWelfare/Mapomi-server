@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Role {
-    DISABLED("ROLE_DISABLED", "장애인"), ABLED("ROLE_ABLED","동행인"), OBSERVER("ROLE_OBSERVER","지인");
+    DISABLED("ROLE_DISABLED", "장애인"), ABLED("ROLE_ABLED","동행인"), OBSERVER("ROLE_OBSERVER","지인"), NONE("ROLE_NONE","미정");
     private final String key;
     private final String title;
 
