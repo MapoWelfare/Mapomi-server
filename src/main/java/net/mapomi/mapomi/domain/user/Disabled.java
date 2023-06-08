@@ -35,7 +35,8 @@ public class Disabled extends User{
     private Observer observer;
 
 
-    public Disabled(JoinDto dto) {
+    public Disabled(JoinDto dto)
+    {
         super(dto.getNickname(), "", Role.setRole("disabled"));
     }
 
