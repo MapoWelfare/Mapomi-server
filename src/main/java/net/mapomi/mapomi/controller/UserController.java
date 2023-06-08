@@ -10,6 +10,7 @@ import net.mapomi.mapomi.dto.request.LoginDto;
 import net.mapomi.mapomi.dto.request.NickNameDto;
 import net.mapomi.mapomi.jwt.TokenRequestDto;
 import net.mapomi.mapomi.service.UserCommandService;
+import net.mapomi.mapomi.service.UserQueryService;
 import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserCommandService userCommandService;
+    private final UserQueryService userQueryService;
 
 
     @ApiDocumentResponse
@@ -69,5 +71,12 @@ public class UserController {
     @PostMapping(value = "/users/edit/image")
     public JSONObject updateUserImage(@RequestPart MultipartFile multipartFile) {
         return userCommandService.updateUserImage(multipartFile);
+    }
+
+    @ApiDocumentResponse
+    @ApiOperation(value = "내 프로필 가져오기")
+    @PostMapping(value ="/users/my-profile")
+    public JSONObject getMyPage(){
+        return userQueryService.getMyProfile();
     }
 }

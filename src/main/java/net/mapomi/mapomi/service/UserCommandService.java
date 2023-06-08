@@ -68,6 +68,7 @@ public class UserCommandService {
 
         refreshTokenRepository.save(refreshToken);
 
+
         return tokenDto;
     }
 
@@ -114,6 +115,7 @@ public class UserCommandService {
         loginUser.setPicture(url);
         userRepository.save(loginUser);
         try{
+
 
         }
         catch (Exception e){
