@@ -35,7 +35,8 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public User(String nickName, String picture, Role role) {
+    public User(String email,String nickName, String picture, Role role) {
+        this.email = email;
         this.nickName = nickName;
         this.picture = picture;
         this.role = role;

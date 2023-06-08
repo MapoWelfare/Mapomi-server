@@ -17,7 +17,7 @@ public class Observer extends User{
     @JoinColumn(name = "disabled_id")
     private Disabled disabled;
 
-    public Observer(JoinDto dto) {super(dto.getNickname(), "", Role.setRole("observer"));}
+    public Observer(JoinDto dto) {super(dto.getEmail(),dto.getNickname(), "", Role.setRole("observer"));}
 
     protected Observer() {}
 }

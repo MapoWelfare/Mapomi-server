@@ -37,7 +37,7 @@ public class Disabled extends User{
 
     public Disabled(JoinDto dto)
     {
-        super(dto.getNickname(), "", Role.setRole("disabled"));
+        super(dto.getEmail(),dto.getNickname(), "", Role.setRole("disabled"));
     }
 
     protected Disabled() {super();}

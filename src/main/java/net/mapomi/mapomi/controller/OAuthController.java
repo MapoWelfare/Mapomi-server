@@ -36,12 +36,11 @@ public class OAuthController {
         TokenDto jwtToken;
         try{
             jwtToken = userService.oAuthLogin(OauthUser.getEmail());
+            return PropertyUtil.response(jwtToken);
         }
-        catch(UserNotFoundException e){
-            User savedUser = userService.saveTempUser(new User(OauthUser.getEmail(), OauthUser.getPicture()));
-            jwtToken = userService.oAuthLogin(savedUser.getEmail());
+        catch (Exception e){
+            return PropertyUtil.response(false);
         }
-        return PropertyUtil.response(jwtToken);
     }
 
     @ApiOperation(value = "스프링용 카카오로그인 실행(인가코드)",notes = "로컬환경 : https://kauth.kakao.com/oauth/authorize?client_id=ad91fa142c08bdf6f047dfb348f53b10&redirect_uri=http://localhost:8080/login/oauth2/code/kakao&response_type=code\n" +
