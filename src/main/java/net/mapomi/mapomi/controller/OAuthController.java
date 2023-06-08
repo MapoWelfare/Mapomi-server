@@ -39,7 +39,8 @@ public class OAuthController {
             return PropertyUtil.response(jwtToken);
         }
         catch (Exception e){
-            return PropertyUtil.response(false);
+            jwtToken = new TokenDto();
+            return PropertyUtil.response(jwtToken);
         }
     }
 
