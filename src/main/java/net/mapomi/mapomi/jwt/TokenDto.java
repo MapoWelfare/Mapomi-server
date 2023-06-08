@@ -13,7 +13,9 @@ public class TokenDto {
     private String accessToken;
     private String refreshToken;
     private Long accessTokenExpireDate;
+
     private Role role;
+
     private boolean joined = true;
 
     public void setJoined(boolean joined) {

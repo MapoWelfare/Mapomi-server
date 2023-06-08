@@ -16,7 +16,10 @@ public class Observer extends User{
     @JoinColumn(name = "disabled_id")
     private Disabled disabled;
 
+
     public Observer(JoinDto dto,String email) {super(email,dto.getNickname(), "", Role.setRole("observer"));}
+
+
 
     protected Observer() {}
 }

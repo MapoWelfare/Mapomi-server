@@ -14,11 +14,6 @@ import java.util.Set;
 @DiscriminatorValue("abled")
 public class Abled extends User{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "User_SEQ")
-    @Column(name = "user_id")
-    private Long id;
-
     @Column
     private int age;
 
@@ -28,13 +23,14 @@ public class Abled extends User{
     @Column
     private int popularity=0;
 
+
     @OneToMany(mappedBy = "abled",cascade = CascadeType.MERGE)
     private Set<MatchRequest> matchRequests = new LinkedHashSet<>();
 
 
-
     public Abled(JoinDto dto,String email) {
         super(email,dto.getNickname(), "", Role.setRole("abled"));
+
     }
 
     protected Abled() {}
