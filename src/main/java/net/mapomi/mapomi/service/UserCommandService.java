@@ -72,9 +72,19 @@ public class UserCommandService {
         return tokenDto;
     }
 
-    public JSONObject signup(String type, JoinDto joinInfo) throws NullPointerException {
-        User user = userUtils.getCurrentUser();
-        user.setJoinInfo(type, joinInfo);
+    public JSONObject signup(String type, JoinDto joinInfo) throws NullPointerException { //아이디 비번 이름 생일 통신사 번호 저장
+        if(type.equals("disabled")){
+            Disabled user = new Disabled(joinInfo);
+            userRepository.save(user);
+        }
+        else if(type.equals("abled")){
+            Abled user = new Abled(joinInfo);
+            userRepository.save(user);
+        }
+        else{
+            Observer user = new Observer(joinInfo);
+            userRepository.save(user);
+        }
         return PropertyUtil.response(true);
     }
 
